@@ -1,12 +1,8 @@
 import { defineConfig } from 'astro/config';
-import tailwindcss from '@tailwindcss/vite';
+import tailwind from "@astrojs/tailwind";
 
-// Configuração oficial PRO Elite — Tailwind v4 + No Toolbar
 export default defineConfig({
-  vite: {
-    plugins: [tailwindcss()],
-  },
-  devToolbar: {
-    enabled: false
-  }
+  site: 'https://gustamarchioro.github.io', 
+  base: '/pro-elite-dashboard', // O nome exato do seu repositório
+  integrations: [tailwind()],
 });
