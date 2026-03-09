@@ -1,0 +1,31 @@
+---
+interface Props {
+  type: 'lenda' | 'puro' | 'ouro' | 'prata' | 'top3';
+  label: string;
+}
+
+const { type, label } = Astro.props;
+
+const themes = {
+  lenda: "bg-lenda-bg text-lenda-text",
+  puro:  "bg-puro-bg text-puro-text",
+  ouro:  "bg-ouro-bg text-ouro-text",
+  prata: "bg-prata-bg text-prata-text",
+  top3:  "bg-top3-bg text-top3-text",
+};
+
+const icons = {
+  lenda: "👑",
+  puro:  "🔥",
+  ouro:  "🥇",
+  prata: "🥈",
+  top3:  "🏆",
+};
+---
+
+<div class={`${themes[type]} flex items-center gap-1.5 px-2.5 py-1 rounded-full shrink-0`}>
+  <span class="text-[10px] leading-none">{icons[type]}</span>
+  <span class="font-normal leading-none text-[9.5px] whitespace-nowrap tracking-wide uppercase">
+    {label}
+  </span>
+</div>

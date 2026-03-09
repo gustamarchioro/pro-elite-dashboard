@@ -1,0 +1,249 @@
+---
+import { Image } from 'astro:assets';
+import athleteFallback from '../assets/athlete-fallback.svg';
+import { athletes } from '../data/athletes';
+import type { Athlete } from '../types/athlete';
+
+type Gender = 'M' | 'F';
+type PodiumPosition = 1 | 2 | 3;
+
+type RankedAthlete = Athlete & {
+  position: PodiumPosition;
+  rankLabel: '1°' | '2°' | '3°';
+  firstName: string;
+  paceDisplay: string;
+};
+
+// FIGMA REF: 17-189 - NÃO ALTERAR ESTRUTURA VISUAL.
+const PODIUM_ORDER: PodiumPosition[] = [2, 1, 3];
+const PODIUM_BG: Record<PodiumPosition, string> = {
+  1: 'bg-[#fcbe2b]',
+  2: 'bg-[#e9e9e9]',
+  3: 'bg-[#f1f1f1]',
+};
+const PODIUM_HEIGHT: Record<PodiumPosition, string> = {
+  1: 'h-[208px]',
+  2: 'h-[136px]',
+  3: 'h-[112px]',
+};
+const ROW_BG: Record<PodiumPosition, string> = {
+  1: 'bg-[#fcbe2b]',
+  2: 'bg-[#e9e9e9]',
+  3: 'bg-[#f1f1f1]',
+};
+const MARATHON_DISTANCE_KM = 42.195;
+
+function toSeconds(bestTime: string): number {
+  const [h, m, s] = bestTime.split(':').map(Number);
+  if (!Number.isFinite(h) || !Number.isFinite(m) || !Number.isFinite(s)) {
+    return Number.POSITIVE_INFINITY;
+  }
+  return h * 3600 + m * 60 + s;
+}
+
+function getFirstName(name: string): string {
+  const firstName = name.trim().split(' ')[0];
+  return firstName || 'Atleta';
+}
+
+function resolvePhoto(photo: string): string {
+  return photo && photo.trim() !== '' ? photo : athleteFallback.src;
+}
+
+function formatPaceFromBestTime(bestTime: string): string {
+  const totalSeconds = toSeconds(bestTime);
+  if (!Number.isFinite(totalSeconds) || totalSeconds <= 0) {
+    return '-- /km';
+  }
+
+  const secondsPerKm = Math.round(totalSeconds / MARATHON_DISTANCE_KM);
+  const minutes = Math.floor(secondsPerKm / 60);
+  const seconds = secondsPerKm % 60;
+
+  return `${minutes}'${String(seconds).padStart(2, '0')}" /km`;
+}
+
+function resolvePace(athlete: Athlete): string {
+  const athletePace = typeof athlete.pace === 'string' ? athlete.pace.trim() : '';
+  if (athletePace !== '') {
+    return athletePace;
+  }
+  return formatPaceFromBestTime(athlete.bestTime);
+}
+
+function getTopThreeByGender(gender: Gender): RankedAthlete[] {
+  return athletes
+    .filter((athlete) => athlete.gender === gender)
+    .sort((a, b) => toSeconds(a.bestTime) - toSeconds(b.bestTime))
+    .slice(0, 3)
+    .map((athlete, index) => {
+      const position = (index + 1) as PodiumPosition;
+      const rankLabel = `${position}°` as RankedAthlete['rankLabel'];
+      return {
+        ...athlete,
+        position,
+        rankLabel,
+        firstName: getFirstName(athlete.name),
+        paceDisplay: resolvePace(athlete),
+      };
+    });
+}
+
+function toPodiumOrder(athletesByRank: RankedAthlete[]): RankedAthlete[] {
+  return PODIUM_ORDER
+    .map((position) => athletesByRank.find((athlete) => athlete.position === position))
+    .filter((athlete): athlete is RankedAthlete => Boolean(athlete));
+}
+
+const maleTopThree = getTopThreeByGender('M');
+const femaleTopThree = getTopThreeByGender('F');
+
+const malePodium = toPodiumOrder(maleTopThree);
+const femalePodium = toPodiumOrder(femaleTopThree);
+---
+
+<section class="w-full pt-[112px]">
+  <div class="max-w-[1280px] mx-auto px-8 w-full">
+
+    <!-- Cabeçalho -->
+    <div class="flex flex-col gap-[24px] items-center text-center w-full mb-[64px]">
+      <h2 class="font-sans font-semibold text-[40px] leading-[1.1] text-[#010101]">
+        Os tempos mais rápidos do time
+      </h2>
+      <p class="font-sans font-normal text-[20px] leading-[1.4] text-[#2b2b2b] max-w-[504px]">
+        Top 3 geral por gênero nas maratonas oficiais. Aqui, o ranking reflete consistência, estratégia e execução.
+      </p>
+    </div>
+
+    <!-- Painéis lado a lado -->
+    <div class="flex flex-col lg:flex-row gap-[32px] items-stretch w-full">
+
+      <!-- ── Masculino ── -->
+      <div class="flex-1 bg-[#fafafa] rounded-[16px] px-[16px] py-[48px] flex flex-col gap-[48px] items-start">
+
+        <!-- Pódio -->
+        <div class="flex flex-col gap-[48px] items-center w-full">
+          <p class="font-sans font-semibold text-[20px] leading-[1.1] tracking-[0.08em] text-[#010101] uppercase whitespace-nowrap">
+            Top 3 • Masculino
+          </p>
+          <div class="flex items-end gap-[16px] w-full">
+            {malePodium.map((p) => (
+              <div class="flex flex-col gap-[16px] items-center flex-1">
+                <!-- Foto + nome -->
+                <div class="flex flex-col gap-[8px] items-center">
+                  <Image
+                    src={resolvePhoto(p.photo)}
+                    alt={p.name}
+                    width={72}
+                    height={72}
+                    loading="lazy"
+                    class="w-[72px] h-[72px] rounded-full object-cover"
+                  />
+                  <span class="font-sans font-semibold text-[16px] leading-[1.1] text-[#010101] text-center whitespace-nowrap">
+                    {p.firstName}
+                  </span>
+                </div>
+                <!-- Barra do pódio com número sobreposto -->
+                <div class={`relative w-full ${PODIUM_HEIGHT[p.position]} ${PODIUM_BG[p.position]} rounded-tl-[8px] rounded-tr-[8px] flex items-center justify-center`}>
+                  <span class="font-sans font-semibold text-[48px] leading-[1.1] text-[#010101]">{p.rankLabel}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Lista -->
+        <div class="flex flex-col gap-[24px] w-full">
+          {maleTopThree.map((r) => (
+            <div class={`${ROW_BG[r.position]} rounded-[8px] p-[16px] flex flex-col sm:flex-row sm:items-center gap-[16px] sm:gap-[48px] w-full`}>
+              <div class="flex flex-1 gap-[16px] items-center min-w-0 w-full">
+                <div class="flex gap-[16px] items-center shrink-0">
+                  <span class="font-sans font-semibold text-[24px] leading-[1.1] text-[#010101] whitespace-nowrap">{r.rankLabel}</span>
+                  <Image
+                      src={resolvePhoto(r.photo)}
+                      alt={r.name}
+                      width={43}
+                      height={43}
+                      loading="lazy"
+                      class="w-[43px] h-[43px] rounded-full object-cover shrink-0"
+                    />
+                </div>
+                <div class="flex flex-col gap-[4px] min-w-0 flex-1">
+                  <span class="font-sans font-semibold text-[18px] leading-[1.1] text-[#010101] truncate">{r.name}</span>
+                  <span class="font-sans font-normal text-[12px] leading-[1.1] text-[rgba(1,1,1,0.5)]">{r.ageGroup}</span>
+                </div>
+              </div>
+              <div class="flex flex-row sm:flex-col justify-between sm:justify-center items-center sm:items-end gap-[8px] sm:gap-[4px] w-full sm:w-auto shrink-0 text-left sm:text-right border-t border-[rgba(0,0,0,0.05)] sm:border-0 pt-[12px] sm:pt-0">
+                <span class="font-sans font-semibold text-[18px] leading-[1.1] tabular-nums text-[#010101] whitespace-nowrap">{r.bestTime}</span>
+                <span class="font-sans font-normal text-[12px] leading-[1.1] text-[rgba(1,1,1,0.5)] whitespace-nowrap">{r.paceDisplay}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- ── Feminino ── -->
+      <div class="flex-1 bg-[#fafafa] rounded-[16px] px-[16px] py-[48px] flex flex-col gap-[48px] items-start">
+
+        <!-- Pódio -->
+        <div class="flex flex-col gap-[48px] items-center w-full">
+          <p class="font-sans font-semibold text-[20px] leading-[1.1] tracking-[0.08em] text-[#010101] uppercase w-full text-center">
+            Top 3 • Feminino
+          </p>
+          <div class="flex items-end gap-[16px] w-full">
+            {femalePodium.map((p) => (
+              <div class="flex flex-col gap-[16px] items-center flex-1">
+                <div class="flex flex-col gap-[8px] items-center">
+                  <Image
+                    src={resolvePhoto(p.photo)}
+                    alt={p.name}
+                    width={72}
+                    height={72}
+                    loading="lazy"
+                    class="w-[72px] h-[72px] rounded-full object-cover"
+                  />
+                  <span class="font-sans font-semibold text-[16px] leading-[1.1] text-[#010101] text-center whitespace-nowrap">
+                    {p.firstName}
+                  </span>
+                </div>
+                <div class={`relative w-full ${PODIUM_HEIGHT[p.position]} ${PODIUM_BG[p.position]} rounded-tl-[8px] rounded-tr-[8px] flex items-center justify-center`}>
+                  <span class="font-sans font-semibold text-[48px] leading-[1.1] text-[#010101]">{p.rankLabel}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Lista -->
+        <div class="flex flex-col gap-[24px] w-full">
+          {femaleTopThree.map((r) => (
+            <div class={`${ROW_BG[r.position]} rounded-[8px] p-[16px] flex flex-col sm:flex-row sm:items-center gap-[16px] sm:gap-[48px] w-full`}>
+              <div class="flex flex-1 gap-[16px] items-center min-w-0 w-full">
+                <div class="flex gap-[16px] items-center shrink-0">
+                  <span class="font-sans font-semibold text-[24px] leading-[1.1] text-[#010101] whitespace-nowrap">{r.rankLabel}</span>
+                  <Image
+                      src={resolvePhoto(r.photo)}
+                      alt={r.name}
+                      width={43}
+                      height={43}
+                      loading="lazy"
+                      class="w-[43px] h-[43px] rounded-full object-cover shrink-0"
+                    />
+                </div>
+                <div class="flex flex-col gap-[4px] min-w-0 flex-1">
+                  <span class="font-sans font-semibold text-[18px] leading-[1.1] text-[#010101] truncate">{r.name}</span>
+                  <span class="font-sans font-normal text-[12px] leading-[1.1] text-[rgba(1,1,1,0.5)]">{r.ageGroup}</span>
+                </div>
+              </div>
+              <div class="flex flex-row sm:flex-col justify-between sm:justify-center items-center sm:items-end gap-[8px] sm:gap-[4px] w-full sm:w-auto shrink-0 text-left sm:text-right border-t border-[rgba(0,0,0,0.05)] sm:border-0 pt-[12px] sm:pt-0">
+                <span class="font-sans font-semibold text-[18px] leading-[1.1] tabular-nums text-[#010101] whitespace-nowrap">{r.bestTime}</span>
+                <span class="font-sans font-normal text-[12px] leading-[1.1] text-[rgba(1,1,1,0.5)] whitespace-nowrap">{r.paceDisplay}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>

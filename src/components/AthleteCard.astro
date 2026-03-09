@@ -1,0 +1,196 @@
+---
+import type { Athlete, BadgeType } from '../data/athletes';
+import Badge from './Badge.astro';
+
+type Props = Athlete;
+
+const {
+  name, category, trainer, photoUrl, verified,
+  badges, totalRaces, bestTime, bestPace, races,
+} = Astro.props;
+
+const badgeLabels: Record<BadgeType, string> = {
+  lenda: 'Lenda PRO',
+  puro:  'Puro Sangue',
+  ouro:  'Ouro Elite',
+  prata: 'Prata Elite',
+  top3:  'Top 3 Geral',
+};
+---
+
+<!-- data-races serializa o histórico para o script cliente -->
+<div
+  data-athlete-card
+  data-races={JSON.stringify(races)}
+  class="bg-pro-white border-[1.5px] border-pro-border rounded-2xl shadow-[0px_8px_8px_0px_rgba(1,1,1,0.02)] p-6 flex flex-col gap-6 transition-[border-color] duration-200 hover:border-pro-dark"
+>
+
+  <!-- ── Header: avatar + identidade ── -->
+  <div class="flex gap-3 items-start">
+    <div class="shrink-0 w-16 h-16 rounded-full bg-pro-border flex items-center justify-center text-3xl overflow-hidden">
+      {photoUrl
+        ? <img src={photoUrl} alt={name} class="w-full h-full object-cover" />
+        : <span>👤</span>
+      }
+    </div>
+
+    <div class="flex flex-col min-w-0 flex-1">
+      <div class="flex items-center gap-1">
+        <span class="font-bold leading-tight text-pro-black text-[18px] truncate">{name}</span>
+        {verified && (
+          <svg class="w-4 h-4 text-blue-500 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+          </svg>
+        )}
+      </div>
+
+      <span class="font-normal text-[14px] text-pro-black/50 mt-0.5">{category}</span>
+
+      <span class="font-normal text-pro-black text-[14px] mt-2 truncate">
+        {trainer ? `Treinador: ${trainer}` : 'Auto-treinado'}
+      </span>
+
+      <!-- Badges: flex-nowrap garante alinhamento em linha única -->
+      <div class="flex flex-row flex-nowrap items-center gap-1.5 mt-2.5 w-full overflow-hidden">
+        {badges.map(type => <Badge type={type} label={badgeLabels[type]} />)}
+      </div>
+    </div>
+  </div>
+
+  <div class="h-px w-full bg-pro-border"></div>
+
+  <!-- ── Stats ── -->
+  <div class="grid grid-cols-2 gap-4 items-center">
+    <div class="flex flex-col gap-1">
+      <span class="font-medium text-[15px] leading-tight text-pro-black">Total de<br/>maratonas</span>
+      <span class="font-bold text-[36px] leading-none text-pro-black mt-1">{totalRaces}</span>
+    </div>
+    <div class="bg-pro-surface rounded-lg p-3.5 flex flex-col gap-1 items-center text-center">
+      <span class="font-medium text-[13px] text-pro-black">Melhor tempo</span>
+      <span class="font-bold text-[22px] text-pro-black">{bestTime}</span>
+      <span class="font-medium text-[13px] text-pro-black/60">{bestPace}</span>
+    </div>
+  </div>
+
+  <div class="h-px w-full bg-pro-border"></div>
+
+  <!-- ── Ações ancoradas no fundo via mt-auto ── -->
+  <div data-actions class="flex flex-col gap-2 mt-auto">
+    <button class="border border-pro-dark/70 text-pro-dark/70 font-medium text-[15px] py-3.5 rounded w-full hover:bg-gray-50 transition-colors">
+      Salvar imagem
+    </button>
+    <button
+      data-toggle
+      aria-expanded="false"
+      class="text-pro-dark/70 font-medium text-[15px] py-2 flex items-center justify-center gap-2 hover:text-pro-black transition-colors"
+    >
+      <span data-toggle-text class="underline">Ver histórico completo</span>
+      <svg
+        data-toggle-icon
+        xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+        viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+        class="transition-transform duration-300"
+      >
+        <path d="m6 9 6 6 6-6"/>
+      </svg>
+    </button>
+  </div>
+
+</div>
+
+<script>
+  import autoAnimate from '@formkit/auto-animate';
+
+  interface Race {
+    city: string;
+    year: number;
+    time: string;
+    pace: string;
+  }
+
+  /** Constrói o bloco de histórico agrupado por ano (US 2.3) */
+  function buildHistorySection(races: Race[]): HTMLElement {
+    const byYear = races.reduce<Record<number, Race[]>>((acc, race) => {
+      (acc[race.year] ??= []).push(race);
+      return acc;
+    }, {});
+
+    const years = Object.keys(byYear).map(Number).sort((a, b) => b - a);
+
+    const wrapper = document.createElement('div');
+    wrapper.setAttribute('data-history', '');
+    wrapper.className = 'flex flex-col gap-4';
+
+    // Divisor superior
+    const divider = document.createElement('div');
+    divider.className = 'h-px w-full bg-pro-border';
+    wrapper.appendChild(divider);
+
+    years.forEach(year => {
+      const section = document.createElement('div');
+      section.className = 'flex flex-col gap-2';
+
+      const yearLabel = document.createElement('span');
+      yearLabel.className = 'font-semibold text-[12px] text-pro-black/40 uppercase tracking-widest';
+      yearLabel.textContent = String(year);
+      section.appendChild(yearLabel);
+
+      byYear[year].forEach(race => {
+        const row = document.createElement('div');
+        row.className = 'flex items-center justify-between text-[14px]';
+
+        const city = document.createElement('span');
+        city.className = 'text-pro-black font-medium truncate';
+        city.textContent = race.city;
+
+        const time = document.createElement('span');
+        time.className = 'text-pro-black/60 tabular-nums shrink-0 ml-2';
+        time.textContent = race.time;
+
+        row.appendChild(city);
+        row.appendChild(time);
+        section.appendChild(row);
+      });
+
+      wrapper.appendChild(section);
+    });
+
+    return wrapper;
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-athlete-card]').forEach(card => {
+    const races: Race[] = JSON.parse(card.dataset.races ?? '[]');
+    const toggleBtn   = card.querySelector<HTMLButtonElement>('[data-toggle]')!;
+    const toggleText  = card.querySelector<HTMLElement>('[data-toggle-text]')!;
+    const toggleIcon  = card.querySelector<HTMLElement>('[data-toggle-icon]')!;
+    const actionsDiv  = card.querySelector<HTMLElement>('[data-actions]')!;
+
+    // Registra o card como container animado pelo auto-animate
+    autoAnimate(card);
+
+    let expanded = false;
+    let historyEl: HTMLElement | null = null;
+
+    toggleBtn.addEventListener('click', () => {
+      expanded = !expanded;
+
+      // US 2.4 — borda muda para pro-dark quando expandido
+      card.style.borderColor = expanded
+        ? 'var(--color-pro-dark)'
+        : '';
+
+      if (expanded) {
+        historyEl = buildHistorySection(races);
+        card.insertBefore(historyEl, actionsDiv); // auto-animate capta a inserção
+      } else {
+        historyEl?.remove();                      // auto-animate capta a remoção
+        historyEl = null;
+      }
+
+      toggleText.textContent = expanded ? 'Recolher histórico' : 'Ver histórico completo';
+      toggleIcon.style.transform = expanded ? 'rotate(180deg)' : '';
+      toggleBtn.setAttribute('aria-expanded', String(expanded));
+    });
+  });
+</script>

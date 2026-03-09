@@ -1,0 +1,18 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Hero from '../components/Hero.astro';
+import MarqueeBanner from '../components/MarqueeBanner.astro';
+import Stats from '../components/Stats.astro';
+import TopTimes from '../components/TopTimes.astro';
+import Ranking from '../components/Ranking.astro';
+import ChallengeCta from '../components/ChallengeCta.astro';
+---
+
+<Layout title="PRO Elite — Dashboard">
+  <Hero currentMarathons={50} />
+  <MarqueeBanner />
+  <Stats />
+  <TopTimes />
+  <Ranking />
+  <ChallengeCta />
+</Layout>

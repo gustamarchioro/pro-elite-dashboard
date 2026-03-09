@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PRO Elite — Living Design System</title>
+
+  <!-- Google Fonts: Inter (única fonte usada no Figma) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS Play CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            /* ── Paleta Institucional ────────────────────────────────── */
+            'pro-yellow':       '#fcbe2b',   /* Amarelo PRO Elite        */
+            'pro-black':        '#010101',   /* Preto puro               */
+            'pro-dark':         '#2b2b2b',   /* Preto secundário         */
+            'pro-white':        '#fefefe',   /* Branco                   */
+            'pro-surface':      '#fafafa',   /* Off-white (superfícies)  */
+            'pro-border':       '#eaeaea',   /* Bordas / divisores       */
+
+            /* ── Badges ─────────────────────────────────────────────── */
+            'lenda-bg':         '#0f172a',   /* Lenda PRO — fundo  */
+            'lenda-text':       '#fdb827',   /* Lenda PRO — texto  */
+
+            'puro-bg':          '#fee2e2',   /* Puro Sangue — fundo      */
+            'puro-text':        '#991b1b',   /* Puro Sangue — texto      */
+
+            'ouro-bg':          '#fef3c7',   /* Ouro Elite — fundo       */
+            'ouro-text':        '#92400e',   /* Ouro Elite — texto       */
+
+            'prata-bg':         '#e2e8f0',   /* Prata Elite — fundo      */
+            'prata-text':       '#1e293b',   /* Prata Elite — texto      */
+
+            'top3-bg':          '#064e3b',   /* Top 3 Geral — fundo      */
+            'top3-text':        '#a7f3d0',   /* Top 3 Geral — texto      */
+
+            /* ── Charts ──────────────────────────────────────────── */
+            'chart-blue':       '#2563eb',   /* Azul para gráficos       */
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
+
+  <style>
+    /* Garante que a fonte Inter seja aplicada em todo o documento */
+    * { font-family: 'Inter', sans-serif; }
+
+    /* Marquee animation para o banner */
+    @keyframes marquee {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .marquee-track {
+      animation: marquee 16s linear infinite;
+    }
+
+    /* Scrollbar discreta */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #f5f5f4; }
+    ::-webkit-scrollbar-thumb { background: #d4d4d0; border-radius: 3px; }
+  </style>
+</head>
+
+<body class="bg-[#f5f5f4] text-[#010101] min-h-screen antialiased">
+
+  <!-- ══════════════════════════════════════════════════════════════════
+       NAVBAR
+  ══════════════════════════════════════════════════════════════════ -->
+  <header class="bg-[#010101] sticky top-0 z-50">
+    <div class="max-w-[1216px] mx-auto px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-7 h-7 rounded-full bg-[#fcbe2b]"></div>
+        <span class="text-[#fefefe] text-base font-bold tracking-wide uppercase">PRO Elite</span>
+        <span class="text-[rgba(254,254,254,0.25)] mx-2 text-lg font-light">/</span>
+        <span class="text-[rgba(254,254,254,0.5)] text-sm font-normal">Design System</span>
+      </div>
+      <span class="text-[rgba(254,254,254,0.3)] text-xs font-mono hidden sm:block">Living Documentation · 2026</span>
+    </div>
+  </header>
+
+  <!-- ══════════════════════════════════════════════════════════════════
+       HERO INTRO
+  ══════════════════════════════════════════════════════════════════ -->
+  <div class="bg-[#010101] border-b border-[rgba(254,254,254,0.06)]">
+    <div class="max-w-[1216px] mx-auto px-8 py-20">
+      <!-- Small pill — idêntico ao do Figma -->
+      <div class="inline-flex items-center px-4 py-2 rounded-full border border-[rgba(254,254,254,0.1)] bg-[rgba(254,254,254,0.05)] mb-8">
+        <span class="text-[rgba(254,254,254,0.5)] text-sm font-normal leading-[1.5]">PRO Elite: 1000 Maratonas (2026-2030)</span>
+      </div>
+
+      <h1 class="text-[48px] font-bold leading-[1.1] text-[#fefefe] max-w-2xl mb-6">
+        Performance se mede.<br>Evolução se registra.
+      </h1>
+      <p class="text-[18px] font-normal leading-[1.5] text-[rgba(254,254,254,0.55)] max-w-xl mb-10">
+        Todos os tokens de cor, tipografia e componentes extraídos diretamente do Figma da plataforma PRO Elite. Use como referência fiel para implementação.
+      </p>
+
+      <!-- Botões do Figma -->
+      <div class="flex flex-wrap gap-4">
+        <button class="bg-[#fcbe2b] text-[#010101] font-semibold text-[18px] leading-[1.5] px-8 py-4 rounded-full">
+          Ver ranking
+        </button>
+        <button class="border border-[rgba(254,254,254,0.3)] text-[#fefefe] font-normal text-[18px] leading-[1.5] px-8 py-4 rounded-full bg-transparent">
+          Entrar para o time
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════
+       BANNER MARQUEE  (exato do Figma – bg #fcbe2b, fonte SemiBold 18px)
+  ══════════════════════════════════════════════════════════════════ -->
+  <div class="bg-[#fcbe2b] overflow-hidden py-[24px]">
+    <div class="marquee-track flex gap-16 whitespace-nowrap font-semibold text-[18px] leading-[1.5] text-[#010101]">
+      <span>Se não há desafio, não há transformação!</span>
+      <span class="opacity-30">✦</span>
+      <span>Se não há desafio, não há transformação!</span>
+      <span class="opacity-30">✦</span>
+      <span>Se não há desafio, não há transformação!</span>
+      <span class="opacity-30">✦</span>
+      <span>Se não há desafio, não há transformação!</span>
+      <span class="opacity-30">✦</span>
+      <!-- duplicado para loop contínuo -->
+      <span>Se não há desafio, não há transformação!</span>
+      <span class="opacity-30">✦</span>
+      <span>Se não há desafio, não há transformação!</span>
+      <span class="opacity-30">✦</span>
+      <span>Se não há desafio, não há transformação!</span>
+      <span class="opacity-30">✦</span>
+      <span>Se não há desafio, não há transformação!</span>
+      <span class="opacity-30">✦</span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════
+       CONTEÚDO PRINCIPAL
+  ══════════════════════════════════════════════════════════════════ -->
+  <main class="max-w-[1216px] mx-auto px-8 py-20 space-y-24">
+
+    <!-- ─────────────────────────────────────────────────────────────
+         A — TYPOGRAPHY
+    ───────────────────────────────────────────────────────────────── -->
+    <section id="typography">
+      <!-- Section label -->
+      <div class="flex items-center gap-4 mb-10">
+        <span class="bg-[#010101] text-[#fcbe2b] text-xs font-bold font-mono px-3 py-1 rounded">A</span>
+        <h2 class="text-xs font-bold uppercase tracking-[0.2em] text-[rgba(1,1,1,0.4)]">Typography</h2>
+        <div class="flex-1 h-px bg-[#eaeaea]"></div>
+      </div>
+
+      <div class="bg-white border border-[#eaeaea] rounded-2xl overflow-hidden">
+
+        <!-- Heading 1 -->
+        <div class="flex items-start gap-8 p-10 border-b border-[#eaeaea]">
+          <div class="flex-1 min-w-0">
+            <p class="text-[48px] font-bold leading-[1.1] text-[#010101]">
+              Performance se mede.<br>Evolução se registra.
+            </p>
+          </div>
+          <div class="shrink-0 w-44 text-right pt-1 space-y-1">
+            <p class="text-[11px] font-bold text-[#010101] font-mono uppercase tracking-wide">Heading 1</p>
+            <p class="text-[11px] font-mono text-[rgba(1,1,1,0.4)]">48px · Bold 700</p>
+            <p class="text-[11px] font-mono text-[rgba(1,1,1,0.4)]">line-height 1.1</p>
+            <p class="text-[11px] font-mono text-[rgba(1,1,1,0.4)]">color #010101</p>
+          </div>
+        </div>
+
+        <!-- Heading 2 -->
+        <div class="flex items-start gap-8 p-10 border-b border-[#eaeaea]">
+          <div class="flex-1">
+            <p class="text-[32px] font-bold leading-[1.1] text-[#010101]">
+              Ranking de Atletas 2026–2030
+            </p>
+          </div>
+          <div class="shrink-0 w-44 text-right pt-1 space-y-1">
+            <p class="text-[11px] font-bold text-[#010101] font-mono uppercase tracking-wide">Heading 2</p>
+            <p class="text-[11px] font-mono text-[rgba(1,1,1,0.4)]">32px · Bold 700</p>
+            <p class="text-[11px] font-mono text-[rgba(1,1,1,0.4)]">line-height 1.1</p>
+            <p class="text-[11px] font-mono text-[rgba(1,1,1,0.4)]">color #010101</p>
+          </div>
+        </div>
+
+        <!-- Heading 3 / Card Name -->
+        <div class="flex items-center gap-8 p-10 border-b border-[#eaeaea]">
+          <div class="flex-1">
+            <p class="text-[20px] font-bold leading-[1.1] text-[#010101]">
+              Felipe Fagundes
+            </p>
+          </div>
+          <div class="shrink-0 w-44 text-right space-y-1">
+            <p class="text-[11px] font-bold text-[#010101] font-mono uppercase tracking-wide">Name / H3</p>
+            <p class="text-[11px] font-mono text-[rgba(1,1,1,0.4)]">20px · Bold 700</p>
+            <p class="text-[11px] font-mono text-[rgba(1,1,1,0.4)]">line-height 1.1</p>
+            <p class="text-[11px] font-mono text-[rgba(1,1,1,0.4)]">color #010101</p>
+          </div>
+        </div>
+
+        <!-- Body Large -->
+        <div class="flex items-start gap-8 p-10 border-b border-[#eaeaea]">
+          <div class="flex-1">
+            <p class="text-[18px] font-normal leading-[1.5] text-[#2b2b2b]">
+              Até 2030, a PRO ELITE vai registrar 1000 maratonas concluídas pelo time. Porque se não há desafio, não há transformação. Cada atleta acompanha seu nome, seus números e sua posição.
+            </p>
+          </div>
+          <div class="shrink-0 w-44 text-right pt-1 space-y-1">
+            <p class="text-[11px] font-bold text-[#010101] font-mono uppercase tracking-wide">Body Large</p>
+            <p class="text-[11px] font-mono text-[rgba(1,1,1,0.4)]">18px · Regular 400</p>
+            <p class="text-[11px] font-mono text-[rgba(1,1,1,0.4)]">line-height 1.5</p>
+            <p class="text-[11px] font-mono text-[rgba(1,1,1,0.4)]">color #2b2b2b</p>
+          </div>
+        </div>
+
+        <!-- Label / Body Medium -->
+        <div class="flex items-center gap-8 p-10 border-b border-[#eaeaea]">
+          <div class="flex-1">
+            <p class="text-[16px] font-medium leading-[1.5] text-[#2b2b2b]">Total de maratonas</p>
+            <p class="text-[16px] font-medium leading-[1.5] text-[rgba(1,1,1,0.5)] mt-1">Muted variant</p>
+          </div>
+          <div class="shrink-0 w-44 text-right space-y-1">
+            <p class="text-[11px] font-bold text-[#010101] font-mono uppercase tracking-wide">Label / Body</p>
+            <p class="text-[11px] font-mono text-[rgba(1,1,1,0.4)]">16px · Medium 500</p>
+            <p class="text-[11px] font-mono text-[rgba(1,1,1,0.4)]">line-height 1.1</p>
+            <p class="text-[11px] font-mono text-[rgba(1,1,1,0.4)]">color #2b2b2b</p>
+          </div>
+        </div>
+
+        <!-- Stat Number -->
+        <div class="flex items-center gap-8 p-10 border-b border-[#eaeaea]">
+          <div class="flex-1 flex items-end gap-8">
+            <p class="text-[48px] font-semibold leading-none text-[#010101]">158</p>
+            <p class="text-[24px] font-semibold leading-[1.5] text-[#010101] pb-1">Maratonas concluídas</p>
+          </div>
+          <div class="shrink-0 w-44 text-right space-y-1">
+            <p class="text-[11px] font-bold text-[#010101] font-mono uppercase tracking-wide">Stat / Counter</p>
+            <p class="text-[11px] font-mono text-[rgba(1,1,1,0.4)]">48px · SemiBold 600</p>
+            <p class="text-[11px] font-mono text-[rgba(1,1,1,0.4)]">24px · SemiBold 600</p>
+            <p class="text-[11px] font-mono text-[rgba(1,1,1,0.4)]">line-height normal / 1.5</p>
+          </div>
+        </div>
+
+        <!-- Stat Numero Grande -->
+        <div class="flex items-center gap-8 p-10 border-b border-[#eaeaea]">
+          <div class="flex-1">
+            <p class="text-[40px] font-bold leading-[1.1] text-[#010101]">16</p>
+          </div>
+          <div class="shrink-0 w-44 text-right space-y-1">
+            <p class="text-[11px] font-bold text-[#010101] font-mono uppercase tracking-wide">Stat Large</p>
+            <p class="text-[11px] font-mono text-[rgba(1,1,1,0.4)]">40px · Bold 700</p>
+            <p class="text-[11px] font-mono text-[rgba(1,1,1,0.4)]">line-height 1.1</p>
+          </div>
+        </div>
+
+        <!-- Caption / Badge Text -->
+        <div class="flex items-center gap-8 p-10">
+          <div class="flex-1">
+            <p class="text-[10px] font-normal leading-[1.1] text-[rgba(1,1,1,0.5)]">Lenda PRO</p>
+          </div>
+          <div class="shrink-0 w-44 text-right space-y-1">
+            <p class="text-[11px] font-bold text-[#010101] font-mono uppercase tracking-wide">Badge / Caption</p>
+            <p class="text-[11px] font-mono text-[rgba(1,1,1,0.4)]">10px · Regular 400</p>
+            <p class="text-[11px] font-mono text-[rgba(1,1,1,0.4)]">line-height 1.1</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────────────────────────────────────
+         B — COLORS & SURFACES
+    ───────────────────────────────────────────────────────────────── -->
+    <section id="colors">
+      <div class="flex items-center gap-4 mb-10">
+        <span class="bg-[#010101] text-[#fcbe2b] text-xs font-bold font-mono px-3 py-1 rounded">B</span>
+        <h2 class="text-xs font-bold uppercase tracking-[0.2em] text-[rgba(1,1,1,0.4)]">Colors &amp; Surfaces</h2>
+        <div class="flex-1 h-px bg-[#eaeaea]"></div>
+      </div>
+
+      <div class="bg-white border border-[#eaeaea] rounded-2xl p-10 space-y-12">
+
+        <!-- Paleta da marca -->
+        <div>
+          <p class="text-xs font-bold uppercase tracking-[0.15em] text-[rgba(1,1,1,0.4)] mb-6">Paleta da Marca</p>
+          <div class="flex flex-wrap gap-6">
+
+            <!-- PRO Yellow -->
+            <div class="flex flex-col gap-2.5 items-center">
+              <div class="w-[86px] h-[86px] rounded-xl bg-[#fcbe2b] shadow-sm border border-[rgba(0,0,0,0.06)]"></div>
+              <p class="text-xs font-semibold text-[#010101] text-center leading-tight">PRO Yellow</p>
+              <p class="text-[11px] font-mono text-[rgba(1,1,1,0.45)]">#fcbe2b</p>
+              <span class="text-[10px] font-mono text-[rgba(1,1,1,0.3)]">primary</span>
+            </div>
+
+            <!-- PRO Black -->
+            <div class="flex flex-col gap-2.5 items-center">
+              <div class="w-[86px] h-[86px] rounded-xl bg-[#010101] shadow-sm"></div>
+              <p class="text-xs font-semibold text-[#010101] text-center leading-tight">PRO Black</p>
+              <p class="text-[11px] font-mono text-[rgba(1,1,1,0.45)]">#010101</p>
+              <span class="text-[10px] font-mono text-[rgba(1,1,1,0.3)]">brand dark</span>
+            </div>
+
+            <!-- Dark -->
+            <div class="flex flex-col gap-2.5 items-center">
+              <div class="w-[86px] h-[86px] rounded-xl bg-[#2b2b2b] shadow-sm"></div>
+              <p class="text-xs font-semibold text-[#010101] text-center leading-tight">Dark</p>
+              <p class="text-[11px] font-mono text-[rgba(1,1,1,0.45)]">#2b2b2b</p>
+              <span class="text-[10px] font-mono text-[rgba(1,1,1,0.3)]">secondary text</span>
+            </div>
+
+            <!-- White -->
+            <div class="flex flex-col gap-2.5 items-center">
+              <div class="w-[86px] h-[86px] rounded-xl bg-[#fefefe] border border-[#eaeaea] shadow-sm"></div>
+              <p class="text-xs font-semibold text-[#010101] text-center leading-tight">White</p>
+              <p class="text-[11px] font-mono text-[rgba(1,1,1,0.45)]">#fefefe</p>
+              <span class="text-[10px] font-mono text-[rgba(1,1,1,0.3)]">card bg</span>
+            </div>
+
+            <!-- Surface -->
+            <div class="flex flex-col gap-2.5 items-center">
+              <div class="w-[86px] h-[86px] rounded-xl bg-[#fafafa] border border-[#eaeaea] shadow-sm"></div>
+              <p class="text-xs font-semibold text-[#010101] text-center leading-tight">Surface</p>
+              <p class="text-[11px] font-mono text-[rgba(1,1,1,0.45)]">#fafafa</p>
+              <span class="text-[10px] font-mono text-[rgba(1,1,1,0.3)]">stat box bg</span>
+            </div>
+
+            <!-- Border -->
+            <div class="flex flex-col gap-2.5 items-center">
+              <div class="w-[86px] h-[86px] rounded-xl bg-[#eaeaea] border border-[#d4d4d4] shadow-sm"></div>
+              <p class="text-xs font-semibold text-[#010101] text-center leading-tight">Border</p>
+              <p class="text-[11px] font-mono text-[rgba(1,1,1,0.45)]">#eaeaea</p>
+              <span class="text-[10px] font-mono text-[rgba(1,1,1,0.3)]">dividers</span>
+            </div>
+
+            <!-- Chart Blue -->
+            <div class="flex flex-col gap-2.5 items-center">
+              <div class="w-[86px] h-[86px] rounded-xl bg-[#2563eb] shadow-sm"></div>
+              <p class="text-xs font-semibold text-[#010101] text-center leading-tight">Chart Blue</p>
+              <p class="text-[11px] font-mono text-[rgba(1,1,1,0.45)]">#2563eb</p>
+              <span class="text-[10px] font-mono text-[rgba(1,1,1,0.3)]">charts</span>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="h-px bg-[#eaeaea]"></div>
+
+        <!-- Cores dos Badges -->
+        <div>
+          <p class="text-xs font-bold uppercase tracking-[0.15em] text-[rgba(1,1,1,0.4)] mb-2">Cores dos Badges</p>
+          <p class="text-xs text-[rgba(1,1,1,0.4)] mb-6">Quadrado superior = cor de fundo · Código inferior = cor do texto</p>
+          <div class="flex flex-wrap gap-6">
+
+            <!-- Lenda PRO -->
+            <div class="flex flex-col gap-2.5 items-center">
+              <div class="w-[86px] h-[86px] rounded-xl flex flex-col items-center justify-center gap-1" style="background:#0f172a;">
+                <span class="text-xl">👑</span>
+              </div>
+              <p class="text-xs font-semibold text-[#010101] text-center leading-tight">Lenda PRO</p>
+              <p class="text-[11px] font-mono text-[rgba(1,1,1,0.45)]">bg #0f172a</p>
+              <p class="text-[11px] font-mono font-bold" style="color:#fdb827;">text #fdb827</p>
+            </div>
+
+            <!-- Puro Sangue -->
+            <div class="flex flex-col gap-2.5 items-center">
+              <div class="w-[86px] h-[86px] rounded-xl flex items-center justify-center border border-[#eaeaea]" style="background:#fee2e2;">
+                <span class="text-2xl">🔥</span>
+              </div>
+              <p class="text-xs font-semibold text-[#010101] text-center leading-tight">Puro Sangue</p>
+              <p class="text-[11px] font-mono text-[rgba(1,1,1,0.45)]">bg #fee2e2</p>
+              <p class="text-[11px] font-mono font-bold text-[#991b1b]">text #991b1b</p>
+            </div>
+
+            <!-- Ouro Elite -->
+            <div class="flex flex-col gap-2.5 items-center">
+              <div class="w-[86px] h-[86px] rounded-xl flex items-center justify-center border border-[#eaeaea]" style="background:#fef3c7;">
+                <span class="text-2xl">🥇</span>
+              </div>
+              <p class="text-xs font-semibold text-[#010101] text-center leading-tight">Ouro Elite</p>
+              <p class="text-[11px] font-mono text-[rgba(1,1,1,0.45)]">bg #fef3c7</p>
+              <p class="text-[11px] font-mono font-bold text-[#92400e]">text #92400e</p>
+            </div>
+
+            <!-- Prata Elite -->
+            <div class="flex flex-col gap-2.5 items-center">
+              <div class="w-[86px] h-[86px] rounded-xl flex items-center justify-center border border-[#eaeaea]" style="background:#e2e8f0;">
+                <span class="text-2xl">🥈</span>
+              </div>
+              <p class="text-xs font-semibold text-[#010101] text-center leading-tight">Prata Elite</p>
+              <p class="text-[11px] font-mono text-[rgba(1,1,1,0.45)]">bg #e2e8f0</p>
+              <p class="text-[11px] font-mono font-bold text-[#1e293b]">text #1e293b</p>
+            </div>
+
+            <!-- Top 3 Geral -->
+            <div class="flex flex-col gap-2.5 items-center">
+              <div class="w-[86px] h-[86px] rounded-xl flex items-center justify-center" style="background:#064e3b;">
+                <span class="text-2xl">🏆</span>
+              </div>
+              <p class="text-xs font-semibold text-[#010101] text-center leading-tight">Top 3 Geral</p>
+              <p class="text-[11px] font-mono text-[rgba(1,1,1,0.45)]">bg #064e3b</p>
+              <p class="text-[11px] font-mono font-bold" style="color:#a7f3d0;">text #a7f3d0</p>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────────────────────────────────────
+         C — UI COMPONENTS
+    ───────────────────────────────────────────────────────────────── -->
+    <section id="components">
+      <div class="flex items-center gap-4 mb-10">
+        <span class="bg-[#010101] text-[#fcbe2b] text-xs font-bold font-mono px-3 py-1 rounded">C</span>
+        <h2 class="text-xs font-bold uppercase tracking-[0.2em] text-[rgba(1,1,1,0.4)]">UI Components</h2>
+        <div class="flex-1 h-px bg-[#eaeaea]"></div>
+      </div>
+
+      <!-- ── C.1 BADGES ──────────────────────────────────────────── -->
+      <div class="bg-white border border-[#eaeaea] rounded-2xl p-10 mb-6">
+        <p class="text-xs font-bold uppercase tracking-[0.15em] text-[rgba(1,1,1,0.4)] mb-1">C.1</p>
+        <p class="text-base font-semibold text-[#010101] mb-8">Badges de Conquista</p>
+
+        <!-- Preview dos badges — exatamente como aparecem nos cards -->
+        <div class="flex flex-wrap items-center gap-3 mb-8 p-6 bg-[#fafafa] rounded-xl border border-[#eaeaea]">
+          <!-- Lenda PRO -->
+          <div class="bg-[#0f172a] flex gap-2 items-center px-3 py-[6px] rounded-full">
+            <span class="text-base leading-none">👑</span>
+            <span class="font-normal leading-[1.1] text-[#fdb827] text-[10px] whitespace-nowrap">Lenda PRO</span>
+          </div>
+
+          <!-- Puro Sangue -->
+          <div class="bg-[#fee2e2] flex gap-2 items-center px-3 py-[6px] rounded-full">
+            <span class="text-base leading-none">🔥</span>
+            <span class="font-normal leading-[1.1] text-[#991b1b] text-[10px] whitespace-nowrap">Puro Sangue</span>
+          </div>
+
+          <!-- Ouro Elite -->
+          <div class="bg-[#fef3c7] flex gap-2 items-center px-3 py-[6px] rounded-full">
+            <span class="text-base leading-none">🥇</span>
+            <span class="font-normal leading-[1.1] text-[#92400e] text-[10px] whitespace-nowrap">Ouro Elite</span>
+          </div>
+
+          <!-- Prata Elite -->
+          <div class="bg-[#e2e8f0] flex gap-2 items-center px-3 py-[6px] rounded-full">
+            <span class="text-base leading-none">🥈</span>
+            <span class="font-normal leading-[1.1] text-[#1e293b] text-[10px] whitespace-nowrap">Prata Elite</span>
+          </div>
+
+          <!-- Top 3 Geral -->
+          <div class="bg-[#064e3b] flex gap-2 items-center px-3 py-[6px] rounded-full">
+            <span class="text-base leading-none">🏆</span>
+            <span class="font-normal leading-[1.1] text-[#a7f3d0] text-[10px] whitespace-nowrap">Top 3 Geral</span>
+          </div>
+        </div>
+
+        <!-- Tabela de especificações -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs border-collapse">
+            <thead>
+              <tr class="border-b border-[#eaeaea]">
+                <th class="text-left py-3 pr-6 font-semibold text-[rgba(1,1,1,0.45)] uppercase tracking-wide text-[11px]">Badge</th>
+                <th class="text-left py-3 pr-6 font-semibold text-[rgba(1,1,1,0.45)] uppercase tracking-wide text-[11px]">Background</th>
+                <th class="text-left py-3 pr-6 font-semibold text-[rgba(1,1,1,0.45)] uppercase tracking-wide text-[11px]">Text Color</th>
+                <th class="text-left py-3 pr-6 font-semibold text-[rgba(1,1,1,0.45)] uppercase tracking-wide text-[11px]">Padding</th>
+                <th class="text-left py-3 font-semibold text-[rgba(1,1,1,0.45)] uppercase tracking-wide text-[11px]">Border Radius</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b border-[#f0f0f0]">
+                <td class="py-3 pr-6 font-semibold text-[#010101]">Lenda PRO</td>
+                <td class="py-3 pr-6 font-mono text-[rgba(1,1,1,0.55)]">#0f172a</td>
+                <td class="py-3 pr-6 font-mono text-[rgba(1,1,1,0.55)]">#fdb827</td>
+                <td class="py-3 pr-6 font-mono text-[rgba(1,1,1,0.55)]">6px 12px</td>
+                <td class="py-3 font-mono text-[rgba(1,1,1,0.55)]">999px</td>
+              </tr>
+              <tr class="border-b border-[#f0f0f0]">
+                <td class="py-3 pr-6 font-semibold text-[#010101]">Puro Sangue</td>
+                <td class="py-3 pr-6 font-mono text-[rgba(1,1,1,0.55)]">#fee2e2</td>
+                <td class="py-3 pr-6 font-mono text-[rgba(1,1,1,0.55)]">#991b1b</td>
+                <td class="py-3 pr-6 font-mono text-[rgba(1,1,1,0.55)]">6px 12px</td>
+                <td class="py-3 font-mono text-[rgba(1,1,1,0.55)]">999px</td>
+              </tr>
+              <tr class="border-b border-[#f0f0f0]">
+                <td class="py-3 pr-6 font-semibold text-[#010101]">Ouro Elite</td>
+                <td class="py-3 pr-6 font-mono text-[rgba(1,1,1,0.55)]">#fef3c7</td>
+                <td class="py-3 pr-6 font-mono text-[rgba(1,1,1,0.55)]">#92400e</td>
+                <td class="py-3 pr-6 font-mono text-[rgba(1,1,1,0.55)]">6px 12px</td>
+                <td class="py-3 font-mono text-[rgba(1,1,1,0.55)]">999px</td>
+              </tr>
+              <tr class="border-b border-[#f0f0f0]">
+                <td class="py-3 pr-6 font-semibold text-[#010101]">Prata Elite</td>
+                <td class="py-3 pr-6 font-mono text-[rgba(1,1,1,0.55)]">#e2e8f0</td>
+                <td class="py-3 pr-6 font-mono text-[rgba(1,1,1,0.55)]">#1e293b</td>
+                <td class="py-3 pr-6 font-mono text-[rgba(1,1,1,0.55)]">6px 12px</td>
+                <td class="py-3 font-mono text-[rgba(1,1,1,0.55)]">999px</td>
+              </tr>
+              <tr>
+                <td class="py-3 pr-6 font-semibold text-[#010101]">Top 3 Geral</td>
+                <td class="py-3 pr-6 font-mono text-[rgba(1,1,1,0.55)]">#064e3b</td>
+                <td class="py-3 pr-6 font-mono text-[rgba(1,1,1,0.55)]">#a7f3d0</td>
+                <td class="py-3 pr-6 font-mono text-[rgba(1,1,1,0.55)]">6px 12px</td>
+                <td class="py-3 font-mono text-[rgba(1,1,1,0.55)]">999px</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── C.2 BUTTONS ────────────────────────────────────────── -->
+      <div class="bg-white border border-[#eaeaea] rounded-2xl p-10 mb-6">
+        <p class="text-xs font-bold uppercase tracking-[0.15em] text-[rgba(1,1,1,0.4)] mb-1">C.2</p>
+        <p class="text-base font-semibold text-[#010101] mb-8">Buttons</p>
+
+        <div class="flex flex-wrap items-center gap-5 p-6 bg-[#fafafa] rounded-xl border border-[#eaeaea] mb-8">
+
+          <!-- Primary — Preto arredondado (Figma: "Ver ranking") -->
+          <div class="flex flex-col items-center gap-3">
+            <button class="bg-[#010101] text-[#fefefe] font-semibold text-[18px] leading-[1.5] px-8 py-4 rounded-full cursor-default">
+              Ver ranking
+            </button>
+            <span class="text-[10px] font-mono text-[rgba(1,1,1,0.4)] uppercase tracking-wide">Primary</span>
+          </div>
+
+          <!-- Secondary — Outline (Figma: "Entrar para o time") -->
+          <div class="flex flex-col items-center gap-3">
+            <button class="border border-[#2b2b2b] text-[#2b2b2b] font-normal text-[18px] leading-[1.5] px-8 py-4 rounded-full bg-transparent cursor-default">
+              Entrar para o time
+            </button>
+            <span class="text-[10px] font-mono text-[rgba(1,1,1,0.4)] uppercase tracking-wide">Secondary</span>
+          </div>
+
+          <!-- Ghost — Card action (Figma: "Salvar imagem") -->
+          <div class="flex flex-col items-center gap-3">
+            <button class="border border-[rgba(43,43,43,0.7)] text-[rgba(43,43,43,0.7)] font-medium text-[16px] leading-[1.1] px-8 py-4 rounded bg-transparent cursor-default w-48 text-center">
+              Salvar imagem
+            </button>
+            <span class="text-[10px] font-mono text-[rgba(1,1,1,0.4)] uppercase tracking-wide">Ghost (Card)</span>
+          </div>
+
+          <!-- Text Link (Figma: "Ver histórico completo") -->
+          <div class="flex flex-col items-center gap-3">
+            <button class="text-[rgba(43,43,43,0.7)] font-medium text-[16px] leading-[1.1] px-8 py-4 underline decoration-solid bg-transparent border-0 cursor-default inline-flex items-center gap-2">
+              Ver histórico completo
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <span class="text-[10px] font-mono text-[rgba(1,1,1,0.4)] uppercase tracking-wide">Text Link</span>
+          </div>
+
+          <!-- Hero Primary — Preto + texto amarelo -->
+          <div class="flex flex-col items-center gap-3">
+            <button class="bg-[#010101] text-[#fcbe2b] font-semibold text-[18px] leading-[1.5] px-8 py-4 rounded-full cursor-default">
+              Ver ranking
+            </button>
+            <span class="text-[10px] font-mono text-[rgba(1,1,1,0.4)] uppercase tracking-wide">Hero Primary</span>
+          </div>
+
+          <!-- CTA — Amarelo + texto preto -->
+          <div class="flex flex-col items-center gap-3">
+            <button class="bg-[#fcbe2b] text-[#010101] font-semibold text-[18px] leading-[1.5] px-8 py-4 rounded-full cursor-default">
+              Entrar para o time
+            </button>
+            <span class="text-[10px] font-mono text-[rgba(1,1,1,0.4)] uppercase tracking-wide">CTA (Yellow)</span>
+          </div>
+
+        </div>
+
+        <!-- Tabela de especificações -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs border-collapse">
+            <thead>
+              <tr class="border-b border-[#eaeaea]">
+                <th class="text-left py-3 pr-5 font-semibold text-[rgba(1,1,1,0.45)] uppercase tracking-wide text-[11px]">Variante</th>
+                <th class="text-left py-3 pr-5 font-semibold text-[rgba(1,1,1,0.45)] uppercase tracking-wide text-[11px]">Background</th>
+                <th class="text-left py-3 pr-5 font-semibold text-[rgba(1,1,1,0.45)] uppercase tracking-wide text-[11px]">Texto / Cor</th>
+                <th class="text-left py-3 pr-5 font-semibold text-[rgba(1,1,1,0.45)] uppercase tracking-wide text-[11px]">Fonte</th>
+                <th class="text-left py-3 pr-5 font-semibold text-[rgba(1,1,1,0.45)] uppercase tracking-wide text-[11px]">Padding</th>
+                <th class="text-left py-3 font-semibold text-[rgba(1,1,1,0.45)] uppercase tracking-wide text-[11px]">Radius</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b border-[#f0f0f0]">
+                <td class="py-3 pr-5 font-semibold text-[#010101]">Primary</td>
+                <td class="py-3 pr-5 font-mono text-[rgba(1,1,1,0.55)]">#010101</td>
+                <td class="py-3 pr-5 font-mono text-[rgba(1,1,1,0.55)]">#fefefe</td>
+                <td class="py-3 pr-5 font-mono text-[rgba(1,1,1,0.55)]">18px SemiBold 600</td>
+                <td class="py-3 pr-5 font-mono text-[rgba(1,1,1,0.55)]">16px 32px</td>
+                <td class="py-3 font-mono text-[rgba(1,1,1,0.55)]">999px</td>
+              </tr>
+              <tr class="border-b border-[#f0f0f0]">
+                <td class="py-3 pr-5 font-semibold text-[#010101]">Secondary</td>
+                <td class="py-3 pr-5 font-mono text-[rgba(1,1,1,0.55)]">transparent</td>
+                <td class="py-3 pr-5 font-mono text-[rgba(1,1,1,0.55)]">#2b2b2b · border</td>
+                <td class="py-3 pr-5 font-mono text-[rgba(1,1,1,0.55)]">18px Regular 400</td>
+                <td class="py-3 pr-5 font-mono text-[rgba(1,1,1,0.55)]">16px 32px</td>
+                <td class="py-3 font-mono text-[rgba(1,1,1,0.55)]">999px</td>
+              </tr>
+              <tr class="border-b border-[#f0f0f0]">
+                <td class="py-3 pr-5 font-semibold text-[#010101]">Ghost (Card)</td>
+                <td class="py-3 pr-5 font-mono text-[rgba(1,1,1,0.55)]">transparent</td>
+                <td class="py-3 pr-5 font-mono text-[rgba(1,1,1,0.55)]">rgba(43,43,43,0.7)</td>
+                <td class="py-3 pr-5 font-mono text-[rgba(1,1,1,0.55)]">16px Medium 500</td>
+                <td class="py-3 pr-5 font-mono text-[rgba(1,1,1,0.55)]">16px 32px</td>
+                <td class="py-3 font-mono text-[rgba(1,1,1,0.55)]">4px</td>
+              </tr>
+              <tr class="border-b border-[#f0f0f0]">
+                <td class="py-3 pr-5 font-semibold text-[#010101]">Text Link</td>
+                <td class="py-3 pr-5 font-mono text-[rgba(1,1,1,0.55)]">none</td>
+                <td class="py-3 pr-5 font-mono text-[rgba(1,1,1,0.55)]">rgba(43,43,43,0.7) + underline</td>
+                <td class="py-3 pr-5 font-mono text-[rgba(1,1,1,0.55)]">16px Medium 500</td>
+                <td class="py-3 pr-5 font-mono text-[rgba(1,1,1,0.55)]">16px 32px</td>
+                <td class="py-3 font-mono text-[rgba(1,1,1,0.55)]">4px</td>
+              </tr>
+              <tr class="border-b border-[#f0f0f0]">
+                <td class="py-3 pr-5 font-semibold text-[#010101]">Hero Primary</td>
+                <td class="py-3 pr-5 font-mono text-[rgba(1,1,1,0.55)]">#010101</td>
+                <td class="py-3 pr-5 font-mono text-[rgba(1,1,1,0.55)]">#fcbe2b</td>
+                <td class="py-3 pr-5 font-mono text-[rgba(1,1,1,0.55)]">18px SemiBold 600</td>
+                <td class="py-3 pr-5 font-mono text-[rgba(1,1,1,0.55)]">16px 32px</td>
+                <td class="py-3 font-mono text-[rgba(1,1,1,0.55)]">999px</td>
+              </tr>
+              <tr>
+                <td class="py-3 pr-5 font-semibold text-[#010101]">CTA (Yellow)</td>
+                <td class="py-3 pr-5 font-mono text-[rgba(1,1,1,0.55)]">#fcbe2b</td>
+                <td class="py-3 pr-5 font-mono text-[rgba(1,1,1,0.55)]">#010101</td>
+                <td class="py-3 pr-5 font-mono text-[rgba(1,1,1,0.55)]">18px SemiBold 600</td>
+                <td class="py-3 pr-5 font-mono text-[rgba(1,1,1,0.55)]">16px 32px</td>
+                <td class="py-3 font-mono text-[rgba(1,1,1,0.55)]">999px</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── C.3 ATHLETE CARD ───────────────────────────────────── -->
+      <div class="bg-white border border-[#eaeaea] rounded-2xl p-10">
+        <p class="text-xs font-bold uppercase tracking-[0.15em] text-[rgba(1,1,1,0.4)] mb-1">C.3</p>
+        <p class="text-base font-semibold text-[#010101] mb-2">Card de Atleta</p>
+        <p class="text-sm text-[rgba(1,1,1,0.45)] mb-8">Componente base extraído do Figma. Exibe as 4 variações de badge possíveis.</p>
+
+        <!-- Grid de cards — 3 colunas em telas grandes -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-[18px] gap-y-[36px] mb-10">
+
+          <div class="bg-white border-[1.5px] border-[#eaeaea] rounded-2xl shadow-[0px_8px_8px_0px_rgba(1,1,1,0.02)] p-6 flex flex-col gap-6 h-full">
+            <div class="flex gap-3 items-start">
+              <div class="shrink-0 w-16 h-16 rounded-full bg-[#eaeaea] flex items-center justify-center text-3xl overflow-hidden">
+                <span>👤</span>
+              </div>
+              <div class="flex flex-col min-w-0 flex-1">
+                <div class="flex items-center gap-1">
+                  <span class="font-bold leading-[1.1] text-[#010101] text-[18px] truncate">Felipe Fagundes</span>
+                  <svg class="w-4 h-4 text-blue-500 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                </div>
+                <span class="font-normal leading-[1.1] text-[14px] text-[rgba(1,1,1,0.5)] mt-0.5">M30-34</span>
+                <span class="font-normal leading-[1.1] text-[#010101] text-[14px] mt-2">Treinador</span>
+                
+                <div class="flex flex-row flex-nowrap items-center gap-1.5 mt-2.5 w-full overflow-hidden">
+                  <div class="bg-[#0f172a] flex items-center gap-1 px-2.5 py-1 rounded-full shrink-0">
+                    <span class="text-xs leading-none">👑</span>
+                    <span class="font-normal leading-[1.1] text-[#fdb827] text-[9.5px] whitespace-nowrap tracking-wide">Lenda PRO</span>
+                  </div>
+                  <div class="bg-[#064e3b] flex items-center gap-1 px-2.5 py-1 rounded-full shrink-0">
+                    <span class="text-xs leading-none">🏆</span>
+                    <span class="font-normal leading-[1.1] text-[#a7f3d0] text-[9.5px] whitespace-nowrap tracking-wide">Top 3 Geral</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="h-px w-full bg-[#eaeaea]"></div>
+            <div class="grid grid-cols-2 gap-4 items-center">
+              <div class="flex flex-col gap-1">
+                <span class="font-medium text-[15px] leading-[1.2] text-[#010101]">Total de<br>maratonas</span>
+                <span class="font-bold text-[36px] leading-[1.1] text-[#010101] mt-1">16</span>
+              </div>
+              <div class="bg-[#fafafa] rounded-lg p-3.5 flex flex-col gap-1 items-center justify-center text-center">
+                <span class="font-medium text-[13px] leading-[1.1] text-[#010101]">Melhor tempo</span>
+                <span class="font-bold text-[22px] leading-[1.1] text-[#010101]">02:51:28</span>
+                <span class="font-medium text-[13px] leading-[1.1] text-[rgba(1,1,1,0.6)]">4'04" /km</span>
+              </div>
+            </div>
+            <div class="h-px w-full bg-[#eaeaea]"></div>
+            <div class="flex flex-col gap-2 mt-auto">
+              <button class="border border-[rgba(43,43,43,0.7)] text-[rgba(43,43,43,0.7)] font-medium text-[15px] leading-[1.1] py-3.5 rounded w-full text-center bg-transparent transition-colors hover:bg-gray-50">
+                Salvar imagem
+              </button>
+              <button class="text-[rgba(43,43,43,0.7)] font-medium text-[15px] leading-[1.1] py-3.5 rounded w-full text-center underline decoration-solid bg-transparent border-0 flex items-center justify-center gap-2 hover:text-black">
+                Ver histórico completo
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="bg-white border-[1.5px] border-[#eaeaea] rounded-2xl shadow-[0px_8px_8px_0px_rgba(1,1,1,0.02)] p-6 flex flex-col gap-6 h-full">
+            <div class="flex gap-3 items-start">
+              <div class="shrink-0 w-16 h-16 rounded-full bg-[#eaeaea] flex items-center justify-center text-3xl overflow-hidden">
+                <span>👤</span>
+              </div>
+              <div class="flex flex-col min-w-0 flex-1">
+                <span class="font-bold leading-[1.1] text-[#010101] text-[18px] truncate">Rafael Arrais</span>
+                <span class="font-normal leading-[1.1] text-[14px] text-[rgba(1,1,1,0.5)] mt-0.5">M35-39</span>
+                <span class="font-normal leading-[1.1] text-[#010101] text-[14px] mt-2 truncate">Treinador: Nestor</span>
+                
+                <div class="flex flex-row flex-nowrap items-center gap-1.5 mt-2.5 w-full overflow-hidden">
+                  <div class="bg-[#fee2e2] flex items-center gap-1 px-2.5 py-1 rounded-full shrink-0">
+                    <span class="text-xs leading-none">🔥</span>
+                    <span class="font-normal leading-[1.1] text-[#991b1b] text-[9.5px] whitespace-nowrap tracking-wide">Puro Sangue</span>
+                  </div>
+                  <div class="bg-[#064e3b] flex items-center gap-1 px-2.5 py-1 rounded-full shrink-0">
+                    <span class="text-xs leading-none">🏆</span>
+                    <span class="font-normal leading-[1.1] text-[#a7f3d0] text-[9.5px] whitespace-nowrap tracking-wide">Top 3 Geral</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="h-px w-full bg-[#eaeaea]"></div>
+            <div class="grid grid-cols-2 gap-4 items-center">
+              <div class="flex flex-col gap-1">
+                <span class="font-medium text-[15px] leading-[1.2] text-[#010101]">Total de<br>maratonas</span>
+                <span class="font-bold text-[36px] leading-[1.1] text-[#010101] mt-1">12</span>
+              </div>
+              <div class="bg-[#fafafa] rounded-lg p-3.5 flex flex-col gap-1 items-center justify-center text-center">
+                <span class="font-medium text-[13px] leading-[1.1] text-[#010101]">Melhor tempo</span>
+                <span class="font-bold text-[22px] leading-[1.1] text-[#010101]">02:55:27</span>
+                <span class="font-medium text-[13px] leading-[1.1] text-[rgba(1,1,1,0.6)]">4'09" /km</span>
+              </div>
+            </div>
+            <div class="h-px w-full bg-[#eaeaea]"></div>
+            <div class="flex flex-col gap-2 mt-auto">
+              <button class="border border-[rgba(43,43,43,0.7)] text-[rgba(43,43,43,0.7)] font-medium text-[15px] leading-[1.1] py-3.5 rounded w-full text-center bg-transparent transition-colors hover:bg-gray-50">
+                Salvar imagem
+              </button>
+              <button class="text-[rgba(43,43,43,0.7)] font-medium text-[15px] leading-[1.1] py-3.5 rounded w-full text-center underline decoration-solid bg-transparent border-0 flex items-center justify-center gap-2 hover:text-black">
+                Ver histórico completo
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="bg-white border-[1.5px] border-[#eaeaea] rounded-2xl shadow-[0px_8px_8px_0px_rgba(1,1,1,0.02)] p-6 flex flex-col gap-6 h-full">
+            <div class="flex gap-3 items-start">
+              <div class="shrink-0 w-16 h-16 rounded-full bg-[#eaeaea] flex items-center justify-center text-3xl overflow-hidden">
+                <span>👤</span>
+              </div>
+              <div class="flex flex-col min-w-0 flex-1">
+                <span class="font-bold leading-[1.1] text-[#010101] text-[18px] truncate">Pedro Augusto</span>
+                <span class="font-normal leading-[1.1] text-[14px] text-[rgba(1,1,1,0.5)] mt-0.5">M35-39</span>
+                <span class="font-normal leading-[1.1] text-[#010101] text-[14px] mt-2 truncate">Treinador: Giuliano</span>
+                
+                <div class="flex flex-row flex-nowrap items-center gap-1.5 mt-2.5 w-full overflow-hidden">
+                  <div class="bg-[#fef3c7] flex items-center gap-1 px-2.5 py-1 rounded-full shrink-0">
+                    <span class="text-xs leading-none">🥇</span>
+                    <span class="font-normal leading-[1.1] text-[#92400e] text-[9.5px] whitespace-nowrap tracking-wide">Ouro Elite</span>
+                  </div>
+                  <div class="bg-[#064e3b] flex items-center gap-1 px-2.5 py-1 rounded-full shrink-0">
+                    <span class="text-xs leading-none">🏆</span>
+                    <span class="font-normal leading-[1.1] text-[#a7f3d0] text-[9.5px] whitespace-nowrap tracking-wide">Top 3 Geral</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="h-px w-full bg-[#eaeaea]"></div>
+            <div class="grid grid-cols-2 gap-4 items-center">
+              <div class="flex flex-col gap-1">
+                <span class="font-medium text-[15px] leading-[1.2] text-[#010101]">Total de<br>maratonas</span>
+                <span class="font-bold text-[36px] leading-[1.1] text-[#010101] mt-1">8</span>
+              </div>
+              <div class="bg-[#fafafa] rounded-lg p-3.5 flex flex-col gap-1 items-center justify-center text-center">
+                <span class="font-medium text-[13px] leading-[1.1] text-[#010101]">Melhor tempo</span>
+                <span class="font-bold text-[22px] leading-[1.1] text-[#010101]">02:58:57</span>
+                <span class="font-medium text-[13px] leading-[1.1] text-[rgba(1,1,1,0.6)]">4'14" /km</span>
+              </div>
+            </div>
+            <div class="h-px w-full bg-[#eaeaea]"></div>
+            <div class="flex flex-col gap-2 mt-auto">
+              <button class="border border-[rgba(43,43,43,0.7)] text-[rgba(43,43,43,0.7)] font-medium text-[15px] leading-[1.1] py-3.5 rounded w-full text-center bg-transparent transition-colors hover:bg-gray-50">
+                Salvar imagem
+              </button>
+              <button class="text-[rgba(43,43,43,0.7)] font-medium text-[15px] leading-[1.1] py-3.5 rounded w-full text-center underline decoration-solid bg-transparent border-0 flex items-center justify-center gap-2 hover:text-black">
+                Ver histórico completo
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+            </div>
+          </div>
+
+        </div><!-- /grid -->
+
+        <!-- Card specs table -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs border-collapse">
+            <thead>
+              <tr class="border-b border-[#eaeaea]">
+                <th class="text-left py-3 pr-6 font-semibold text-[rgba(1,1,1,0.45)] uppercase tracking-wide text-[11px]">Propriedade CSS</th>
+                <th class="text-left py-3 font-semibold text-[rgba(1,1,1,0.45)] uppercase tracking-wide text-[11px]">Valor</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b border-[#f0f0f0]"><td class="py-2.5 pr-6 font-semibold text-[#010101]">background</td><td class="py-2.5 font-mono text-[rgba(1,1,1,0.55)]">#ffffff</td></tr>
+              <tr class="border-b border-[#f0f0f0]"><td class="py-2.5 pr-6 font-semibold text-[#010101]">border</td><td class="py-2.5 font-mono text-[rgba(1,1,1,0.55)]">1.5px solid #eaeaea</td></tr>
+              <tr class="border-b border-[#f0f0f0]"><td class="py-2.5 pr-6 font-semibold text-[#010101]">border-radius</td><td class="py-2.5 font-mono text-[rgba(1,1,1,0.55)]">16px</td></tr>
+              <tr class="border-b border-[#f0f0f0]"><td class="py-2.5 pr-6 font-semibold text-[#010101]">box-shadow</td><td class="py-2.5 font-mono text-[rgba(1,1,1,0.55)]">0px 8px 8px 0px rgba(1,1,1,0.02)</td></tr>
+              <tr class="border-b border-[#f0f0f0]"><td class="py-2.5 pr-6 font-semibold text-[#010101]">padding</td><td class="py-2.5 font-mono text-[rgba(1,1,1,0.55)]">48px 24px</td></tr>
+              <tr class="border-b border-[#f0f0f0]"><td class="py-2.5 pr-6 font-semibold text-[#010101]">gap (flex)</td><td class="py-2.5 font-mono text-[rgba(1,1,1,0.55)]">24px</td></tr>
+              <tr class="border-b border-[#f0f0f0]"><td class="py-2.5 pr-6 font-semibold text-[#010101]">Stat box bg</td><td class="py-2.5 font-mono text-[rgba(1,1,1,0.55)]">#fafafa · rounded 8px · 32px 24px pad</td></tr>
+              <tr><td class="py-2.5 pr-6 font-semibold text-[#010101]">Avatar</td><td class="py-2.5 font-mono text-[rgba(1,1,1,0.55)]">72 × 72px · border-radius 50% (circle)</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div><!-- /C.3 -->
+
+      <!-- ── C.4 CARD EXPANDIDO (ABERTO) ──────────────────────── -->
+      <div class="bg-white border border-[#eaeaea] rounded-2xl p-10 mt-6">
+        <p class="text-xs font-bold uppercase tracking-[0.15em] text-[rgba(1,1,1,0.4)] mb-1">C.4</p>
+        <p class="text-base font-semibold text-[#010101] mb-2">Card de Atleta — Expandido (Aberto)</p>
+        <p class="text-sm text-[rgba(1,1,1,0.45)] mb-8">Estado ativo do card: histórico de provas exibido, agrupado por ano.</p>
+
+        <div class="max-w-[372px]">
+          <div class="bg-white border-[1.5px] border-[#2b2b2b] rounded-2xl shadow-[0px_8px_8px_0px_rgba(1,1,1,0.02)] p-6 flex flex-col gap-6 h-full">
+
+            <!-- Header -->
+            <div class="flex gap-2 items-start">
+              <div class="shrink-0 w-[72px] h-[72px] rounded-full bg-[#eaeaea] flex items-center justify-center text-2xl overflow-hidden">
+                <span>👤</span>
+              </div>
+              <div class="flex flex-col gap-4">
+                <div class="flex flex-col gap-4">
+                  <div class="flex flex-col gap-1">
+                    <span class="font-bold leading-[1.1] text-[#2b2b2b] text-[20px]">Jéssica Rossi</span>
+                    <span class="font-normal leading-[1.1] text-[16px] text-[rgba(43,43,43,0.5)]">F30-34</span>
+                  </div>
+                  <span class="font-normal leading-[1.1] text-[#2b2b2b] text-[16px]">Treinador: Felipe</span>
+                </div>
+                <div class="flex flex-row flex-wrap items-center gap-2 mt-2">
+                  <div class="bg-[#e2e8f0] flex gap-2 items-center px-3 py-[6px] rounded-full">
+                    <span class="text-sm">🥈</span>
+                    <span class="font-normal leading-[1.1] text-[#1e293b] text-[10px] whitespace-nowrap">Prata Elite</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Divider -->
+            <div class="h-px bg-[#eaeaea]"></div>
+
+            <!-- Stats -->
+            <div class="grid grid-cols-2 gap-4 items-center">
+              <div class="flex flex-col gap-1">
+                <span class="font-medium text-[14px] leading-[1.1] text-[#2b2b2b]">Total</span>
+                <span class="font-bold text-[32px] leading-[1.1] text-[#2b2b2b]">3</span>
+              </div>
+              <div class="bg-[#fafafa] rounded-lg p-4 flex flex-col gap-1 items-center text-center text-[#2b2b2b]">
+                <span class="font-medium text-[13px] leading-[1.1]">Melhor tempo</span>
+                <span class="font-bold text-[20px] leading-[1.1]">04:38:21</span>
+                <span class="font-medium text-[13px] leading-[1.1]">6'37" /km</span>
+              </div>
+            </div>
+
+            <!-- Divider -->
+            <div class="h-px bg-[#eaeaea]"></div>
+
+            <!-- Histórico de provas -->
+            <div class="flex flex-col gap-3">
+
+              <!-- Cabeçalho do histórico -->
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2 text-[#010101]">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  <span class="font-semibold text-[13px] leading-[1.1]">Histórico completo</span>
+                </div>
+                <span class="bg-[#010101] text-[#fefefe] text-[10px] font-medium px-3 py-[4px] rounded-full whitespace-nowrap">3 provas</span>
+              </div>
+
+              <!-- Grupo 2025 -->
+              <div class="flex items-center gap-3">
+                <span class="bg-[#2b2b2b] text-[#fefefe] font-medium text-[16px] leading-[1.1] px-2 py-1 rounded-[2px]">2025</span>
+                <div class="flex-1 h-px bg-[#eaeaea]"></div>
+                <span class="font-normal text-[14px] leading-[1.1] text-[rgba(43,43,43,0.5)]">2 provas</span>
+              </div>
+              <div class="flex flex-col gap-2">
+                <div class="border border-[#2b2b2b] rounded-[4px] p-3 flex justify-between items-center">
+                  <div class="flex flex-col gap-0.5">
+                    <span class="font-semibold text-[14px] leading-[1.1] text-[#2b2b2b]">Rio de Janeiro</span>
+                    <span class="font-normal text-[11px] leading-[1.1] text-[rgba(43,43,43,0.5)]">2025</span>
+                  </div>
+                  <div class="flex flex-col gap-0.5 text-right">
+                    <span class="font-semibold text-[14px] leading-[1.1] text-[#2b2b2b]">04:38:21</span>
+                    <span class="font-normal text-[11px] leading-[1.1] text-[rgba(43,43,43,0.5)]">6'37" /km</span>
+                  </div>
+                </div>
+                <div class="border border-[#2b2b2b] rounded-[4px] p-3 flex justify-between items-center">
+                  <div class="flex flex-col gap-0.5">
+                    <span class="font-semibold text-[14px] leading-[1.1] text-[#2b2b2b]">São Paulo</span>
+                    <span class="font-normal text-[11px] leading-[1.1] text-[rgba(43,43,43,0.5)]">2025</span>
+                  </div>
+                  <div class="flex flex-col gap-0.5 text-right">
+                    <span class="font-semibold text-[14px] leading-[1.1] text-[#2b2b2b]">04:52:47</span>
+                    <span class="font-normal text-[11px] leading-[1.1] text-[rgba(43,43,43,0.5)]">6'57" /km</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Grupo 2024 -->
+              <div class="flex items-center gap-3">
+                <span class="bg-[#2b2b2b] text-[#fefefe] font-medium text-[16px] leading-[1.1] px-2 py-1 rounded-[2px]">2024</span>
+                <div class="flex-1 h-px bg-[#eaeaea]"></div>
+                <span class="font-normal text-[14px] leading-[1.1] text-[rgba(43,43,43,0.5)]">1 prova</span>
+              </div>
+              <div class="flex flex-col gap-2">
+                <div class="border border-[#2b2b2b] rounded-[4px] p-3 flex justify-between items-center">
+                  <div class="flex flex-col gap-0.5">
+                    <span class="font-semibold text-[14px] leading-[1.1] text-[#2b2b2b]">Florianópolis</span>
+                    <span class="font-normal text-[11px] leading-[1.1] text-[rgba(43,43,43,0.5)]">2024</span>
+                  </div>
+                  <div class="flex flex-col gap-0.5 text-right">
+                    <span class="font-semibold text-[14px] leading-[1.1] text-[#2b2b2b]">05:01:14</span>
+                    <span class="font-normal text-[11px] leading-[1.1] text-[rgba(43,43,43,0.5)]">7'09" /km</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Divider -->
+            <div class="h-px bg-[#eaeaea]"></div>
+
+            <!-- Buttons -->
+            <div class="flex flex-col gap-2 mt-auto">
+              <button class="border border-[rgba(43,43,43,0.7)] text-[rgba(43,43,43,0.7)] font-medium text-[16px] leading-[1.1] py-4 rounded w-full text-center bg-transparent cursor-default">
+                Salvar imagem
+              </button>
+              <button class="text-[rgba(43,43,43,0.7)] font-medium text-[16px] leading-[1.1] py-4 rounded w-full text-center underline decoration-solid bg-transparent border-0 cursor-default flex items-center justify-center gap-2">
+                Resumir histórico
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </div><!-- /C.4 -->
+
+    </section>
+
+    <!-- ─────────────────────────────────────────────────────────────
+         D — HERO WIDGET (Progress Block)
+    ───────────────────────────────────────────────────────────────── -->
+    <section id="hero-widget">
+      <div class="flex items-center gap-4 mb-10">
+        <span class="bg-[#010101] text-[#fcbe2b] text-xs font-bold font-mono px-3 py-1 rounded">D</span>
+        <h2 class="text-xs font-bold uppercase tracking-[0.2em] text-[rgba(1,1,1,0.4)]">Hero Widget — Progress Block</h2>
+        <div class="flex-1 h-px bg-[#eaeaea]"></div>
+      </div>
+
+      <!-- Reprodução fiel do bloco amarelo do hero -->
+      <div class="bg-[#fcbe2b] rounded-2xl px-8 py-[60px] max-w-[592px]">
+        <!-- Progress header -->
+        <div class="flex items-center justify-between font-bold text-[16px] leading-[1.5] text-[#010101] uppercase mb-4">
+          <span>PROGRESSO DO TIME</span>
+          <span>15,8%</span>
+        </div>
+
+        <!-- Progress bar -->
+        <div class="relative h-[39px] mb-4">
+          <div class="w-full h-full rounded-full bg-[#fefefe] shadow-[inset_0px_2px_2px_0px_rgba(0,0,0,0.25)]"></div>
+          <div class="absolute top-0 left-0 w-[47px] h-[39px] rounded-[20px] bg-[#010101] flex items-center justify-center">
+            <span class="font-bold text-[16px] leading-[1.5] text-[#fefefe] uppercase">158</span>
+          </div>
+        </div>
+
+        <!-- Scale labels -->
+        <div class="flex justify-between font-medium text-[14px] text-[#010101] uppercase mb-12">
+          <span>0</span>
+          <span>200</span>
+          <span>400</span>
+          <span>600</span>
+          <span>800</span>
+          <span>1.000 🏆</span>
+        </div>
+
+        <!-- Description -->
+        <p class="font-normal text-[18px] leading-[1.5] text-[#010101] text-center mb-12">
+          Cada maratona concluída aproxima o time do objetivo.<br>
+          Cada atleta que larga, fortalece o movimento.
+        </p>
+
+        <!-- Counter -->
+        <div class="flex items-center justify-center gap-8">
+          <span class="font-semibold text-[48px] leading-none text-[#010101]">158</span>
+          <span class="font-semibold text-[24px] leading-[1.5] text-[#010101]">Maratonas concluídas</span>
+        </div>
+      </div>
+
+      <!-- Variante dark: painel preto com barra segmentada (rounded-3xl) -->
+      <div class="bg-[#010101] rounded-3xl px-10 py-14 max-w-[592px] mt-8">
+        <!-- Header -->
+        <div class="flex items-center justify-between font-bold text-[16px] leading-[1.5] text-[#fefefe] uppercase mb-6">
+          <span>PROGRESSO DO TIME</span>
+          <span class="text-[#fcbe2b]">15,8%</span>
+        </div>
+
+        <!-- Barra segmentada: 10 segmentos × 100 maratonas -->
+        <div class="flex gap-[5px] mb-3">
+          <!-- Segmento 1 — completo (0–100) -->
+          <div class="h-[8px] flex-1 rounded-full bg-[#fcbe2b]"></div>
+          <!-- Segmento 2 — parcial (100–158, ~58%) -->
+          <div class="relative h-[8px] flex-1 rounded-full overflow-hidden" style="background:rgba(254,254,254,0.12)">
+            <div class="absolute top-0 left-0 h-full rounded-full bg-[#fcbe2b]" style="width:58%"></div>
+          </div>
+          <!-- Segmentos 3–10 — vazios -->
+          <div class="h-[8px] flex-1 rounded-full" style="background:rgba(254,254,254,0.12)"></div>
+          <div class="h-[8px] flex-1 rounded-full" style="background:rgba(254,254,254,0.12)"></div>
+          <div class="h-[8px] flex-1 rounded-full" style="background:rgba(254,254,254,0.12)"></div>
+          <div class="h-[8px] flex-1 rounded-full" style="background:rgba(254,254,254,0.12)"></div>
+          <div class="h-[8px] flex-1 rounded-full" style="background:rgba(254,254,254,0.12)"></div>
+          <div class="h-[8px] flex-1 rounded-full" style="background:rgba(254,254,254,0.12)"></div>
+          <div class="h-[8px] flex-1 rounded-full" style="background:rgba(254,254,254,0.12)"></div>
+          <div class="h-[8px] flex-1 rounded-full" style="background:rgba(254,254,254,0.12)"></div>
+        </div>
+
+        <!-- Scale labels -->
+        <div class="flex justify-between font-medium text-[12px] uppercase mb-10" style="color:rgba(254,254,254,0.35)">
+          <span>0</span>
+          <span>200</span>
+          <span>400</span>
+          <span>600</span>
+          <span>800</span>
+          <span>1.000 🏆</span>
+        </div>
+
+        <!-- Counter -->
+        <div class="flex items-end gap-4">
+          <span class="font-semibold text-[48px] leading-none text-[#fcbe2b]">158</span>
+          <span class="font-semibold text-[24px] leading-[1.5] text-[#fefefe] pb-1">Maratonas concluídas</span>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ─────────────────────────────────────────────────────────────
+         E — TAILWIND CONFIG REFERENCE
+    ───────────────────────────────────────────────────────────────── -->
+    <section id="config">
+      <div class="flex items-center gap-4 mb-10">
+        <span class="bg-[#010101] text-[#fcbe2b] text-xs font-bold font-mono px-3 py-1 rounded">⚙</span>
+        <h2 class="text-xs font-bold uppercase tracking-[0.2em] text-[rgba(1,1,1,0.4)]">tailwind.config — Referência Completa</h2>
+        <div class="flex-1 h-px bg-[#eaeaea]"></div>
+      </div>
+
+      <div class="bg-[#010101] rounded-2xl p-8 overflow-x-auto">
+        <pre class="text-[#fefefe] text-sm font-mono leading-relaxed"><code><span class="text-[rgba(254,254,254,0.4)]">// tailwind.config (Play CDN: dentro de &lt;script&gt; após o CDN)</span>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        <span class="text-[rgba(254,254,254,0.45)]">/* ── Paleta Institucional ─────────────── */</span>
+        <span class="text-[#fcbe2b]">'pro-yellow'</span>:       <span class="text-[#a7f3d0]">'#fcbe2b'</span>,  <span class="text-[rgba(254,254,254,0.3)]">/* Amarelo PRO Elite        */</span>
+        <span class="text-[#fcbe2b]">'pro-black'</span>:        <span class="text-[#a7f3d0]">'#010101'</span>,  <span class="text-[rgba(254,254,254,0.3)]">/* Preto puro               */</span>
+        <span class="text-[#fcbe2b]">'pro-dark'</span>:         <span class="text-[#a7f3d0]">'#2b2b2b'</span>,  <span class="text-[rgba(254,254,254,0.3)]">/* Preto secundário         */</span>
+        <span class="text-[#fcbe2b]">'pro-white'</span>:        <span class="text-[#a7f3d0]">'#fefefe'</span>,  <span class="text-[rgba(254,254,254,0.3)]">/* Branco                   */</span>
+        <span class="text-[#fcbe2b]">'pro-surface'</span>:      <span class="text-[#a7f3d0]">'#fafafa'</span>,  <span class="text-[rgba(254,254,254,0.3)]">/* Off-white (superfícies)  */</span>
+        <span class="text-[#fcbe2b]">'pro-border'</span>:       <span class="text-[#a7f3d0]">'#eaeaea'</span>,  <span class="text-[rgba(254,254,254,0.3)]">/* Bordas / divisores       */</span>
+
+        <span class="text-[rgba(254,254,254,0.45)]">/* ── Badges ──────────────────────────── */</span>
+        <span class="text-[#fcbe2b]">'lenda-bg'</span>:         <span class="text-[#a7f3d0]">'#0f172a'</span>,  <span class="text-[rgba(254,254,254,0.3)]">/* Lenda PRO — fundo  */</span>
+        <span class="text-[#fcbe2b]">'lenda-text'</span>:       <span class="text-[#a7f3d0]">'#fdb827'</span>,  <span class="text-[rgba(254,254,254,0.3)]">/* Lenda PRO — texto  */</span>
+
+        <span class="text-[#fcbe2b]">'puro-bg'</span>:          <span class="text-[#a7f3d0]">'#fee2e2'</span>,  <span class="text-[rgba(254,254,254,0.3)]">/* Puro Sangue — fundo      */</span>
+        <span class="text-[#fcbe2b]">'puro-text'</span>:        <span class="text-[#a7f3d0]">'#991b1b'</span>,  <span class="text-[rgba(254,254,254,0.3)]">/* Puro Sangue — texto      */</span>
+
+        <span class="text-[#fcbe2b]">'ouro-bg'</span>:          <span class="text-[#a7f3d0]">'#fef3c7'</span>,  <span class="text-[rgba(254,254,254,0.3)]">/* Ouro Elite — fundo       */</span>
+        <span class="text-[#fcbe2b]">'ouro-text'</span>:        <span class="text-[#a7f3d0]">'#92400e'</span>,  <span class="text-[rgba(254,254,254,0.3)]">/* Ouro Elite — texto       */</span>
+
+        <span class="text-[#fcbe2b]">'prata-bg'</span>:         <span class="text-[#a7f3d0]">'#e2e8f0'</span>,  <span class="text-[rgba(254,254,254,0.3)]">/* Prata Elite — fundo      */</span>
+        <span class="text-[#fcbe2b]">'prata-text'</span>:       <span class="text-[#a7f3d0]">'#1e293b'</span>,  <span class="text-[rgba(254,254,254,0.3)]">/* Prata Elite — texto      */</span>
+
+        <span class="text-[#fcbe2b]">'top3-bg'</span>:          <span class="text-[#a7f3d0]">'#064e3b'</span>,  <span class="text-[rgba(254,254,254,0.3)]">/* Top 3 Geral — fundo      */</span>
+        <span class="text-[#fcbe2b]">'top3-text'</span>:        <span class="text-[#a7f3d0]">'#a7f3d0'</span>,  <span class="text-[rgba(254,254,254,0.3)]">/* Top 3 Geral — texto      */</span>
+
+        <span class="text-[rgba(254,254,254,0.45)]">/* ── Charts ─────────────────────────── */</span>
+        <span class="text-[#fcbe2b]">'chart-blue'</span>:      <span class="text-[#a7f3d0]">'#2563eb'</span>,  <span class="text-[rgba(254,254,254,0.3)]">/* Azul para gráficos       */</span>
+      },
+      fontFamily: {
+        <span class="text-[#fcbe2b]">sans</span>: [<span class="text-[#a7f3d0]">'Inter'</span>, <span class="text-[#a7f3d0]">'sans-serif'</span>],
+      },
+    },
+  },
+}</code></pre>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ══════════════════════════════════════════════════════════════════
+       FOOTER
+  ══════════════════════════════════════════════════════════════════ -->
+  <footer class="bg-[#010101] mt-24 border-t border-[rgba(254,254,254,0.06)]">
+    <div class="max-w-[1216px] mx-auto px-8 h-16 flex items-center justify-between">
+      <span class="text-[rgba(254,254,254,0.35)] text-xs font-mono">PRO Elite: 1000 Maratonas (2026-2030)</span>
+      <span class="text-[rgba(254,254,254,0.35)] text-xs font-mono">© 2026 PRO Elite · Design System</span>
+    </div>
+  </footer>
+
+</body>
+</html>

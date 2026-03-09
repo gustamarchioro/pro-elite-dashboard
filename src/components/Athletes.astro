@@ -1,0 +1,428 @@
+---
+// ─── Figma asset URLs (válidos por 7 dias) ───────────────────────────────────
+// Icons
+const iconCrown    = "https://www.figma.com/api/mcp/asset/732ab0c6-b27f-48b2-a665-5bfa4bb208c3";
+const iconTop3     = "https://www.figma.com/api/mcp/asset/fcc186bc-2ed3-4873-973a-0983f5c98c4a";
+const iconPuro     = "https://www.figma.com/api/mcp/asset/e6c76923-a07c-4b55-aaa7-06973cd53edd";
+const iconOuro     = "https://www.figma.com/api/mcp/asset/84bcb339-dc49-4645-a889-8c8173bc1eaa";
+const iconPrata    = "https://www.figma.com/api/mcp/asset/86b4c5ca-fff6-469a-ac6f-9dd5bb692278";
+const iconBronze   = "https://www.figma.com/api/mcp/asset/bcfbeed3-37ff-401f-b561-499fd0344e0b";
+const iconTreinador= "https://www.figma.com/api/mcp/asset/58f8104c-7e4b-4328-afaf-939da96a9f0d";
+const iconHistory  = "https://www.figma.com/api/mcp/asset/8cc4d85e-526d-43a7-83a1-68d92f208c64";
+const iconSearch   = "https://www.figma.com/api/mcp/asset/7627b95f-f6dd-424c-bcba-ce0166833a04";
+const iconSort     = "https://www.figma.com/api/mcp/asset/b1fa78cd-92fd-4b28-9213-96fd351f7930";
+const iconClear    = "https://www.figma.com/api/mcp/asset/24cb41c0-cfef-47ce-b93e-33c959849794";
+
+// Profile photos
+const photoFelipe   = "https://www.figma.com/api/mcp/asset/77983e09-3466-4107-a791-8e40a509f779";
+const photoRafael   = "https://www.figma.com/api/mcp/asset/f12eb6ac-d933-4b7c-aa4d-f1a42cadf273";
+const photoPedroM   = "https://www.figma.com/api/mcp/asset/afa0974e-8ffa-49c8-b848-efaf68e0f9db";
+const photoJessica  = "https://www.figma.com/api/mcp/asset/d1fd52ce-a092-4a05-967f-803173d6b83c";
+const photoFernanda = "https://www.figma.com/api/mcp/asset/1133f0e1-7125-4201-8fcb-96e7757533f7";
+const photoPedroF   = "https://www.figma.com/api/mcp/asset/a25ffe1a-3021-4b2e-aa51-1040337a7795";
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+type Badge = {
+  label: string;
+  bg: string;
+  textColor: string;
+  icon: string;
+};
+type HistoryRace = {
+  name: string;
+  year: string;
+  time: string;
+  pace: string;
+};
+type HistoryYear = {
+  year: string;
+  count: string;
+  races: HistoryRace[];
+};
+type Athlete = {
+  name: string;
+  ageGroup: string;
+  coach: string;
+  photo: string;
+  isCoach?: boolean;
+  badges: Badge[];
+  totalMarathons: number;
+  bestTime: string;
+  pace: string;
+  expanded?: boolean;
+  history?: HistoryYear[];
+};
+
+// ─── Badge presets ────────────────────────────────────────────────────────────
+const B = {
+  lenda:  { label: 'Lenda PRO ELITE', bg: '#0f172a', textColor: '#fdb827', icon: iconCrown },
+  top3:   { label: 'Top 3 Geral',     bg: '#064e3b', textColor: '#a7f3d0', icon: iconTop3  },
+  puro:   { label: 'Puro Sangue',     bg: '#fee2e2', textColor: '#991b1b', icon: iconPuro  },
+  ouro:   { label: 'Ouro Elite',      bg: '#fef3c7', textColor: '#92400e', icon: iconOuro  },
+  prata:  { label: 'Prata Elite',     bg: '#e2e8f0', textColor: '#1e293b', icon: iconPrata },
+  bronze: { label: 'Bronze Elite',    bg: '#f3e8e0', textColor: '#7c2d12', icon: iconBronze},
+};
+
+// ─── Athletes data ────────────────────────────────────────────────────────────
+const felipeFagundes: Athlete = {
+  name: 'Felipe Fagundes', ageGroup: 'M30-34', coach: 'Treinador', photo: photoFelipe,
+  isCoach: true, badges: [B.lenda, B.top3], totalMarathons: 16, bestTime: '02:51:28', pace: `4'04" /km`,
+};
+const rafaelArrais: Athlete = {
+  name: 'Rafael Arrais', ageGroup: 'M35-39', coach: 'Treinador: Nestor', photo: photoRafael,
+  badges: [B.puro, B.top3], totalMarathons: 12, bestTime: '02:55:27', pace: `4'09" /km`,
+};
+const pedroAugustoM: Athlete = {
+  name: 'Pedro Augusto', ageGroup: 'M35-39', coach: 'Treinador: Giuliano', photo: photoPedroM,
+  badges: [B.ouro, B.top3], totalMarathons: 8, bestTime: '02:58:57', pace: `4'14" /km`,
+};
+const jessicaRossi: Athlete = {
+  name: 'Jéssica Rossi', ageGroup: 'F30-34', coach: 'Treinador: Felipe', photo: photoJessica,
+  badges: [B.prata], totalMarathons: 3, bestTime: '04:38:21', pace: `6'37" /km`,
+};
+const fernandaCoutinho: Athlete = {
+  name: 'Fernanda Coutinho', ageGroup: 'F35-39', coach: 'Treinador: Nestor', photo: photoFernanda,
+  badges: [B.puro, B.top3], totalMarathons: 12, bestTime: '03:15:45', pace: `4'38" /km`,
+};
+const pedroAugustoF: Athlete = {
+  name: 'Pedro Augusto', ageGroup: 'F35-39', coach: 'Treinador: Giuliano', photo: photoPedroF,
+  badges: [B.bronze], totalMarathons: 1, bestTime: '04:58:57', pace: `7'05" /km`,
+};
+const jessicaRossiExpanded: Athlete = {
+  ...jessicaRossi,
+  expanded: true,
+  history: [
+    {
+      year: '2025', count: '2 provas',
+      races: [
+        { name: 'Maratona de Santa Maria',  year: '2025', time: '02:42:17', pace: `3'51"/km` },
+        { name: 'Maratona de Porto Alegre', year: '2025', time: '02:42:17', pace: `3'51"/km` },
+      ],
+    },
+    {
+      year: '2024', count: '1 prova',
+      races: [
+        { name: 'Maratona de Santa Maria', year: '2024', time: '02:42:17', pace: `3'51"/km` },
+      ],
+    },
+  ],
+};
+
+// 4 rows exactly as shown in the Figma
+const rows: Athlete[][] = [
+  [felipeFagundes,       rafaelArrais,     pedroAugustoM],
+  [jessicaRossi,         fernandaCoutinho, pedroAugustoF],
+  [felipeFagundes,       rafaelArrais,     pedroAugustoM],
+  [jessicaRossiExpanded, fernandaCoutinho, pedroAugustoF],
+];
+---
+
+<section class="w-full pt-[112px]">
+  <div class="max-w-[1280px] mx-auto px-8 w-full">
+    <div class="flex flex-col gap-[64px] items-center">
+
+      <!-- ── Header ─────────────────────────────────────────────────────────── -->
+      <div class="flex flex-col gap-[24px] items-center text-center">
+        <h2 class="font-bold text-[40px] leading-[1.1] text-[#010101]">
+          Painel de performance individual
+        </h2>
+        <p class="font-normal text-[20px] leading-[1.4] text-[#2b2b2b] max-w-[624px]">
+          Cada atleta monitora volume, melhor marca e histórico de provas.
+          O progresso é individual. O impacto é coletivo.
+        </p>
+      </div>
+
+      <!-- ── Content: filters + grid ────────────────────────────────────────── -->
+      <div class="flex flex-col gap-[40px] items-start w-full">
+
+        <!-- Filter bar -->
+        <div class="flex gap-[32px] items-start w-full">
+
+          <!-- Search -->
+          <div class="border-[0.5px] border-[rgba(43,43,43,0.5)] rounded-[999px] flex items-center gap-[16px] px-[32px] py-[16px] w-[521px] shrink-0">
+            <img src={iconSearch} alt="" class="w-[20px] h-[20px] shrink-0" />
+            <span class="font-medium text-[18px] leading-[1.1] text-[rgba(43,43,43,0.5)]">
+              Buscar por atleta...
+            </span>
+          </div>
+
+          <!-- Right filters -->
+          <div class="flex flex-col gap-[24px] items-end w-[599px] shrink-0">
+
+            <!-- Row 1: gender + coach -->
+            <div class="flex gap-[24px] items-center w-full justify-end">
+
+              <!-- Gender filter -->
+              <div class="relative border-[0.5px] border-[rgba(43,43,43,0.5)] rounded-[999px] h-[52px] w-[315px] flex items-center px-[24px]">
+                <!-- Active pill -->
+                <span class="absolute left-[8px] top-[8px] bg-[#fcbe2b] rounded-[9999px] h-[36px] w-[77px] pointer-events-none"></span>
+                <div class="relative flex gap-[24px] items-center font-medium text-[18px] text-[#2b2b2b] leading-[1.1]">
+                  <span>Todos</span>
+                  <span>Masculino</span>
+                  <span>Feminino</span>
+                </div>
+              </div>
+
+              <!-- Coach filter -->
+              <div class="border-[0.5px] border-[rgba(43,43,43,0.5)] rounded-[999px] h-[52px] w-[260px] flex items-center gap-[16px] px-[24px]">
+                <div class="flex gap-[8px] items-center font-medium text-[18px] text-[#2b2b2b] leading-[1.1]">
+                  <span>Treinadores:</span>
+                  <span>Todos</span>
+                </div>
+                <!-- Dropdown chevron -->
+                <svg class="w-[11px] h-[11px] shrink-0 rotate-180 ml-auto" viewBox="0 0 10 6" fill="none">
+                  <path d="M1 1L5 5L9 1" stroke="#2b2b2b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Row 2: sort + clear -->
+            <div class="flex gap-[24px] items-center w-full justify-end">
+
+              <!-- Best times sort -->
+              <div class="border-[0.5px] border-[rgba(43,43,43,0.5)] rounded-[999px] h-[52px] w-[315px] flex items-center gap-[16px] px-[24px]">
+                <span class="font-medium text-[18px] text-[#2b2b2b] leading-[1.1]">Melhores tempos</span>
+                <img src={iconSort} alt="" class="w-[8px] h-[12px] shrink-0 ml-auto" />
+              </div>
+
+              <!-- Clear filters -->
+              <div class="border-[0.5px] border-[rgba(43,43,43,0.5)] rounded-[999px] h-[52px] w-[260px] flex items-center justify-center gap-[16px] px-[24px]">
+                <span class="font-medium text-[18px] text-[#2b2b2b] leading-[1.1]">Limpar filtros</span>
+                <img src={iconClear} alt="" class="w-[18px] h-[18px] shrink-0" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cards grid -->
+        <div class="flex flex-col gap-[36px] items-start w-full">
+          {rows.map((row) => (
+            <div class="flex gap-[18px] items-start">
+              {row.map((athlete) => (
+                <div class={`bg-white border-[1.5px] rounded-[16px] shadow-[0px_8px_8px_0px_rgba(1,1,1,0.02)] px-[24px] py-[48px] flex flex-col gap-[24px] items-start w-[372px] shrink-0 ${athlete.expanded ? 'border-[#2b2b2b]' : 'border-[#eaeaea]'}`}>
+
+                  <!-- Profile section -->
+                  <div class="flex flex-col gap-[24px] items-start w-full">
+
+                    <!-- Header row: photo + info -->
+                    <div class="flex gap-[8px] items-start w-full">
+
+                      <!-- Photo -->
+                      <img
+                        src={athlete.photo}
+                        alt={athlete.name}
+                        class="w-[72px] h-[72px] rounded-full object-cover shrink-0"
+                      />
+
+                      <!-- Name + coach + badges -->
+                      <div class="flex flex-col gap-[16px] items-start">
+                        <div class="flex flex-col gap-[4px] items-start">
+                          <!-- Name row -->
+                          <div class="flex gap-[8px] items-center">
+                            <span class={`font-bold text-[20px] leading-[1.1] ${athlete.isCoach ? 'text-[#010101]' : 'text-[#2b2b2b]'}`}>
+                              {athlete.name}
+                            </span>
+                            {athlete.isCoach && (
+                              <img src={iconTreinador} alt="Treinador" class="w-[16px] h-[16px] shrink-0" />
+                            )}
+                          </div>
+                          <!-- Age group -->
+                          <span class={`font-normal text-[16px] leading-[1.1] ${athlete.isCoach ? 'text-[rgba(1,1,1,0.5)]' : 'text-[rgba(43,43,43,0.5)]'}`}>
+                            {athlete.ageGroup}
+                          </span>
+                        </div>
+                        <!-- Coach label -->
+                        <span class={`font-normal text-[16px] leading-[1.1] ${athlete.isCoach ? 'text-[#010101]' : 'text-[#2b2b2b]'}`}>
+                          {athlete.coach}
+                        </span>
+                        <!-- Badges -->
+                        <div class="flex flex-wrap gap-[8px] items-center">
+                          {athlete.badges.map((badge) => (
+                            <span
+                              class="flex gap-[8px] items-center justify-center px-[12px] py-[6px] rounded-[999px]"
+                              style={`background-color: ${badge.bg}`}
+                            >
+                              <img src={badge.icon} alt="" class="w-[16px] h-[16px] shrink-0" />
+                              <span
+                                class="font-normal text-[10px] leading-[1.1] whitespace-nowrap"
+                                style={`color: ${badge.textColor}`}
+                              >
+                                {badge.label}
+                              </span>
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Divider -->
+                    <div class={`h-px w-full ${athlete.isCoach ? 'bg-[#d8d8d8]' : 'bg-[#eaeaea]'}`}></div>
+
+                    <!-- Stats row -->
+                    <div class="flex gap-[71px] items-center w-full">
+                      <!-- Total marathons -->
+                      <div class="flex flex-col gap-[16px] items-start w-[83px]">
+                        <span class={`font-medium text-[16px] leading-[1.1] ${athlete.isCoach ? 'text-[#010101]' : 'text-[#2b2b2b]'}`}>
+                          Total de maratonas
+                        </span>
+                        <span class={`font-bold text-[40px] leading-[1.1] ${athlete.isCoach ? 'text-[#010101]' : 'text-[#2b2b2b]'}`}>
+                          {athlete.totalMarathons}
+                        </span>
+                      </div>
+                      <!-- Best time card -->
+                      <div class="bg-[#fafafa] flex flex-col items-center gap-[8px] px-[32px] py-[24px] rounded-[8px] w-[170px] h-[126px] justify-center text-center">
+                        <span class={`font-medium text-[16px] leading-[1.1] whitespace-nowrap ${athlete.isCoach ? 'text-[#010101]' : 'text-[#2b2b2b]'}`}>
+                          Melhor tempo
+                        </span>
+                        <span class={`font-bold text-[24px] leading-[1.1] ${athlete.isCoach ? 'text-[#010101]' : 'text-[#2b2b2b]'}`}>
+                          {athlete.bestTime}
+                        </span>
+                        <span class={`font-medium text-[16px] leading-[1.1] ${athlete.isCoach ? 'text-[#010101]' : 'text-[#2b2b2b]'}`}>
+                          {athlete.pace}
+                        </span>
+                      </div>
+                    </div>
+
+                    <!-- Divider -->
+                    <div class={`h-px w-full ${athlete.isCoach ? 'bg-[#d8d8d8]' : 'bg-[#eaeaea]'}`}></div>
+                  </div>
+
+                  {athlete.expanded && athlete.history ? (
+                    <!-- ── Expanded: full history ──────────────────────── -->
+                    <>
+                      <!-- History header -->
+                      <div class="flex items-center justify-between w-full">
+                        <div class="flex gap-[8px] items-center">
+                          <img src={iconHistory} alt="" class="w-[16px] h-[16px] shrink-0" />
+                          <span class="font-semibold text-[18px] leading-[1.1] text-[#2b2b2b]">
+                            Histórico completo
+                          </span>
+                        </div>
+                        <div class="bg-[#2b2b2b] flex items-center justify-center px-[8px] py-[4px] rounded-[999px]">
+                          <span class="font-normal text-[18px] leading-[1.1] text-[#fefefe]">
+                            {athlete.totalMarathons} provas
+                          </span>
+                        </div>
+                      </div>
+
+                      <!-- History by year -->
+                      {athlete.history.map((yearGroup) => (
+                        <div class="flex flex-col gap-[16px] items-start w-full">
+                          <!-- Year label + separator -->
+                          <div class="flex gap-[8px] items-center w-full">
+                            <div class="bg-[#2b2b2b] flex items-center justify-center px-[8px] py-[4px] rounded-[2px] shrink-0">
+                              <span class="font-medium text-[16px] leading-[1.1] text-[#fefefe]">
+                                {yearGroup.year}
+                              </span>
+                            </div>
+                            <div class="flex-1 h-px bg-[#e5e5e5]"></div>
+                            <span class="font-normal text-[14px] leading-[1.1] text-[#2b2b2b] text-right shrink-0">
+                              {yearGroup.count}
+                            </span>
+                          </div>
+                          <!-- Race entries -->
+                          <div class="flex flex-col gap-[8px] items-start w-full">
+                            {yearGroup.races.map((race) => (
+                              <div class="border border-[#2b2b2b] rounded-[4px] p-[12px] w-full">
+                                <div class="flex flex-col gap-[8px] w-full">
+                                  <div class="flex gap-[8px] items-start w-full">
+                                    <span class="flex-1 font-semibold text-[14px] leading-[1.1] text-[#2b2b2b]">
+                                      {race.name}
+                                    </span>
+                                    <span class="font-semibold text-[14px] leading-[1.1] text-[#2b2b2b] text-right whitespace-nowrap shrink-0">
+                                      {race.time}
+                                    </span>
+                                  </div>
+                                  <div class="flex gap-[8px] items-start w-full">
+                                    <span class="flex-1 font-normal text-[11px] leading-[1.1] text-[#2b2b2b]">
+                                      {race.year}
+                                    </span>
+                                    <span class="font-normal text-[11px] leading-[1.1] text-[#2b2b2b] text-right whitespace-nowrap shrink-0">
+                                      {race.pace}
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+
+                      <!-- Divider -->
+                      <div class="h-px w-full bg-[#eaeaea]"></div>
+
+                      <!-- Buttons -->
+                      <div class="flex flex-col gap-[8px] items-start w-full">
+                        <button class="border border-[rgba(43,43,43,0.7)] rounded-[4px] flex items-center justify-center py-[16px] w-full cursor-pointer">
+                          <span class="font-medium text-[16px] leading-[1.1] text-[rgba(43,43,43,0.7)]">
+                            Salvar imagem
+                          </span>
+                        </button>
+                        <button class="flex items-center justify-center py-[16px] w-full cursor-pointer">
+                          <div class="flex gap-[8px] items-end">
+                            <span class="font-medium text-[16px] leading-[1.1] text-[rgba(43,43,43,0.7)] underline">
+                              Resumir histórico
+                            </span>
+                            <!-- Arrow up -->
+                            <svg class="w-[10px] h-[10px] shrink-0 mb-[2px]" viewBox="0 0 10 6" fill="none">
+                              <path d="M1 5L5 1L9 5" stroke="rgba(43,43,43,0.7)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                          </div>
+                        </button>
+                      </div>
+                    </>
+                  ) : (
+                    <!-- ── Normal: buttons only ───────────────────────── -->
+                    <div class="flex flex-col gap-[8px] items-start w-full">
+                      <button class="border border-[rgba(43,43,43,0.7)] rounded-[4px] flex items-center justify-center py-[16px] w-full cursor-pointer">
+                        <span class="font-medium text-[16px] leading-[1.1] text-[rgba(43,43,43,0.7)]">
+                          Salvar imagem
+                        </span>
+                      </button>
+                      <button class="flex items-center justify-center py-[16px] w-full cursor-pointer">
+                        <div class="flex gap-[8px] items-center">
+                          <span class="font-medium text-[16px] leading-[1.1] text-[rgba(43,43,43,0.7)] underline">
+                            Ver histórico completo
+                          </span>
+                          <!-- Arrow right-down diagonal -->
+                          <svg class="w-[10px] h-[10px] shrink-0 -rotate-45" viewBox="0 0 10 6" fill="none">
+                            <path d="M1 1L5 5L9 1" stroke="rgba(43,43,43,0.7)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                          </svg>
+                        </div>
+                      </button>
+                    </div>
+                  )}
+
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- ── Pagination ──────────────────────────────────────────────────────── -->
+      <div class="flex flex-col gap-[24px] items-center pb-[112px]">
+        <span class="font-medium text-[16px] leading-[1.1] text-[#2b2b2b]">
+          300 Atletas encontrados • Página 1 de 25
+        </span>
+        <div class="flex gap-[8px] items-start">
+          <button class="border border-[#ddd] rounded-[4px] flex items-center justify-center p-[16px] cursor-pointer">
+            <span class="font-medium text-[16px] leading-[1.1] text-[#2b2b2b]">Anterior</span>
+          </button>
+          <button class="bg-[#fcbe2b] border border-[#010101] rounded-[4px] flex items-center justify-center p-[16px] cursor-pointer">
+            <span class="font-bold text-[16px] leading-[1.1] text-[#2b2b2b]">1</span>
+          </button>
+          {[2, 3, 4, 5].map((n) => (
+            <button class="border border-[#ddd] rounded-[4px] flex items-center justify-center p-[16px] cursor-pointer">
+              <span class="font-medium text-[16px] leading-[1.1] text-[#2b2b2b]">{n}</span>
+            </button>
+          ))}
+          <button class="border border-[#ddd] rounded-[4px] flex items-center justify-center p-[16px] cursor-pointer">
+            <span class="font-medium text-[16px] leading-[1.1] text-[#2b2b2b]">Próxima</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>

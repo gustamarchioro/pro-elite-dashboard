@@ -1,0 +1,995 @@
+---
+import { athletes as importedAthletes, groupByYear } from '../data/athletes';
+import { MARATHON_STANDARD_DISTANCE } from '../utils/calculations';
+
+// ─── Figma asset URLs ───────────────────────────────────────────────────────
+const ICON_CROWN = "https://www.figma.com/api/mcp/asset/732ab0c6-b27f-48b2-a665-5bfa4bb208c3";
+const ICON_TOP3 = "https://www.figma.com/api/mcp/asset/fcc186bc-2ed3-4873-973a-0983f5c98c4a";
+const ICON_PURO = "https://www.figma.com/api/mcp/asset/e6c76923-a07c-4b55-aaa7-06973cd53edd";
+const ICON_OURO = "https://www.figma.com/api/mcp/asset/84bcb339-dc49-4645-a889-8c8173bc1eaa";
+const ICON_PRATA = "https://www.figma.com/api/mcp/asset/86b4c5ca-fff6-469a-ac6f-9dd5bb692278";
+const ICON_BRONZE = "https://www.figma.com/api/mcp/asset/bcfbeed3-37ff-401f-b561-499fd0344e0b";
+const ICON_COACH_STAR = "https://www.figma.com/api/mcp/asset/58f8104c-7e4b-4328-afaf-939da96a9f0d";
+const ICON_HISTORY = "https://www.figma.com/api/mcp/asset/8cc4d85e-526d-43a7-83a1-68d92f208c64";
+
+type Badge = {
+	label: string;
+	bg: string;
+	textColor: string;
+	icon: string;
+};
+
+type Race = {
+	name: string;
+	year: string;
+	time: string;
+	pace: string;
+};
+
+type YearGroup = {
+	year: string;
+	count: string;
+	races: Race[];
+};
+
+type Athlete = {
+	rank: number;
+	name: string;
+	photo: string;
+	ageGroup: string;
+	gender: "M" | "F";
+	coach: string;
+	isCoach?: boolean;
+	marathons: number;
+	bestTime: string;
+	pace: string;
+	status: "Elite" | "Pro" | "Amador";
+	badges: Badge[];
+	history: YearGroup[];
+};
+
+const BADGE = {
+	top3: { label: "Top 3 Geral", bg: "#064e3b", textColor: "#a7f3d0", icon: ICON_TOP3 },
+	puro: { label: "Puro Sangue", bg: "#fee2e2", textColor: "#991b1b", icon: ICON_PURO },
+	ouro: { label: "Ouro Elite", bg: "#fef3c7", textColor: "#92400e", icon: ICON_OURO },
+	prata: { label: "Prata Elite", bg: "#e2e8f0", textColor: "#1e293b", icon: ICON_PRATA },
+	bronze: { label: "Bronze Elite", bg: "#f3e8e0", textColor: "#7c2d12", icon: ICON_BRONZE },
+	lenda: { label: "Lenda PRO", bg: "#0f172a", textColor: "#fdb827", icon: ICON_CROWN },
+} as const;
+
+const athletes: Athlete[] = importedAthletes.map(({ history: flatHistory, badgeKeys, ...rest }) => ({
+	...rest,
+	badges: badgeKeys.map((key) => BADGE[key]),
+	history: groupByYear(flatHistory),
+}));
+
+const coaches = [...new Set(athletes.map((athlete) => athlete.coach))].sort();
+
+athletes.sort((a, b) => a.bestTime.localeCompare(b.bestTime));
+---
+
+<section class="w-full pt-[112px]">
+	<div class="max-w-[1280px] mx-auto px-8 w-full">
+		<div class="flex flex-col gap-[64px] items-center">
+			<div class="flex flex-col gap-[24px] items-center text-center">
+				<h2 class="font-bold text-[40px] leading-[1.1] text-[#010101]">Painel de performance individual</h2>
+				<p class="font-normal text-[20px] leading-[1.4] text-[#2b2b2b] max-w-[624px]">
+					Cada atleta monitora volume, melhor marca e historico de provas.
+					O progresso e individual. O impacto e coletivo.
+				</p>
+			</div>
+
+			<div class="flex flex-col gap-[32px] items-start w-full">
+				<div class="flex flex-col lg:flex-row gap-[24px] lg:gap-[32px] items-start w-full">
+					<div class="border-[0.5px] border-[rgba(43,43,43,0.5)] rounded-[999px] flex items-center gap-[16px] px-[24px] py-[16px] lg:px-[32px] flex-1 w-full">
+						<svg class="w-[20px] h-[20px] shrink-0 text-[rgba(43,43,43,0.5)]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+							<circle cx="11" cy="11" r="8"></circle>
+							<path d="m21 21-4.3-4.3"></path>
+						</svg>
+						<input
+							id="ranking-search"
+							type="text"
+							placeholder="Buscar por atleta..."
+							autocomplete="off"
+							class="bg-transparent font-medium text-[16px] md:text-[18px] leading-[1.1] text-[#2b2b2b] placeholder:text-[rgba(43,43,43,0.5)] outline-none w-full"
+						/>
+					</div>
+
+					<div class="flex flex-col gap-[16px] lg:gap-[24px] items-stretch lg:items-end shrink-0 w-full lg:w-auto">
+						<div class="flex flex-col sm:flex-row gap-[16px] lg:gap-[24px] items-stretch sm:items-center w-full">
+							<div
+								id="ranking-gender"
+								class="border-[0.5px] border-[rgba(43,43,43,0.5)] rounded-[999px] h-[48px] md:h-[52px] w-full sm:w-[315px] flex items-stretch p-[4px] gap-[4px]"
+							>
+								{(["Todos", "Masculino", "Feminino"] as const).map((opt) => (
+									<button
+										type="button"
+										data-gender={opt}
+										class={`gender-option flex-1 h-full rounded-[999px] font-medium text-[14px] md:text-[16px] leading-[1.1] transition-colors cursor-pointer ${opt === "Todos" ? "bg-[#fcbe2b] text-[#010101]" : "text-[#2b2b2b] hover:bg-[#fcbe2b]"}`}
+									>
+										{opt}
+									</button>
+								))}
+							</div>
+
+							<button
+								type="button"
+								id="ranking-athletes-tab"
+								class="hidden border border-[#010101] bg-[#fcbe2b] rounded-[999px] h-[48px] md:h-[52px] min-w-[140px] px-[24px] font-medium text-[16px] md:text-[18px] text-[#010101] leading-[1.1] transition-colors hover:opacity-95 cursor-pointer"
+							>
+								Atletas
+							</button>
+
+							<div class="relative w-full sm:w-auto">
+								<button
+									type="button"
+									id="ranking-coach-btn"
+									class="border border-[rgba(43,43,43,0.5)] bg-transparent rounded-[999px] h-[48px] md:h-[52px] w-full sm:w-[260px] flex items-center justify-between sm:justify-start gap-[8px] px-[24px] font-medium text-[14px] md:text-[18px] text-[#2b2b2b] leading-[1.1] transition-colors hover:bg-[#fcbe2b] hover:text-[#010101] cursor-pointer"
+								>
+									<div class="flex items-center gap-1">
+										<span>Treinador:</span>
+										<span id="ranking-coach-label" class="ml-1">Todos</span>
+									</div>
+									<svg class="w-[10px] h-[6px] shrink-0 transition-transform duration-200" id="coach-chevron" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+										<path d="M1 1L5 5L9 1" stroke="#2b2b2b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+									</svg>
+								</button>
+								<div
+									id="ranking-coach-dropdown"
+									class="hidden absolute right-0 sm:right-auto left-0 sm:left-auto top-[58px] bg-white border border-[#eaeaea] rounded-[16px] shadow-[0px_8px_32px_0px_rgba(1,1,1,0.08)] z-20 py-[8px] w-full sm:min-w-[180px]"
+								>
+									{(["Todos", ...coaches] as const).map((coach) => (
+										<button
+											type="button"
+											data-coach={coach}
+											class="coach-option w-full text-left px-[20px] py-[12px] font-medium text-[14px] md:text-[16px] text-[#2b2b2b] hover:bg-[#fcbe2b] transition-colors cursor-pointer"
+										>
+											{coach}
+										</button>
+									))}
+								</div>
+							</div>
+						</div>
+
+						<div class="flex flex-col sm:flex-row gap-[16px] lg:gap-[24px] items-stretch sm:items-center w-full">
+							<div class="relative w-full sm:w-auto">
+								<button
+									type="button"
+									id="ranking-sort-btn"
+									class="border border-[rgba(43,43,43,0.5)] bg-transparent rounded-[999px] h-[48px] md:h-[52px] w-full sm:w-[315px] flex items-center justify-between sm:justify-start gap-[16px] px-[24px] font-medium text-[14px] md:text-[18px] text-[#2b2b2b] leading-[1.1] transition-colors hover:bg-[#fcbe2b] hover:text-[#010101] cursor-pointer"
+								>
+									<span id="ranking-sort-label">Melhores tempos</span>
+									<svg class="w-[8px] h-[12px] shrink-0 sm:ml-auto" viewBox="0 0 8 14" fill="none" aria-hidden="true">
+										<path d="M4 1V13M1 4L4 1L7 4M1 10L4 13L7 10" stroke="#2b2b2b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+									</svg>
+								</button>
+								<div
+									id="ranking-sort-dropdown"
+									class="hidden absolute right-0 sm:right-auto left-0 sm:left-auto top-[58px] bg-white border border-[#eaeaea] rounded-[16px] shadow-[0px_8px_32px_0px_rgba(1,1,1,0.08)] z-20 py-[8px] w-full sm:min-w-[220px]"
+								>
+									{[
+										{ value: "bestTime", label: "Melhores tempos" },
+										{ value: "marathons_desc", label: "Mais maratonas" },
+										{ value: "name", label: "Nome (A-Z)" },
+									].map((sort) => (
+										<button
+											type="button"
+											data-sort={sort.value}
+											class="sort-option w-full text-left px-[20px] py-[12px] font-medium text-[14px] md:text-[16px] text-[#2b2b2b] hover:bg-[#fcbe2b] transition-colors cursor-pointer"
+										>
+											{sort.label}
+										</button>
+									))}
+								</div>
+							</div>
+
+							<button
+								type="button"
+								id="ranking-clear"
+								class="border-[0.5px] border-[rgba(43,43,43,0.5)] rounded-[999px] h-[48px] md:h-[52px] w-full sm:w-[260px] flex items-center justify-center gap-[12px] px-[24px] font-medium text-[14px] md:text-[18px] text-[#2b2b2b] leading-[1.1] hover:bg-[#fcbe2b] transition-colors cursor-pointer"
+							>
+								<span>Limpar filtros</span>
+								<svg class="w-[16px] h-[16px] shrink-0" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" aria-hidden="true">
+									<path d="M4 7h16" stroke-linecap="round"></path>
+									<path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" stroke-linecap="round"></path>
+									<path d="m7 7 1 12a1 1 0 0 0 1 .9h6a1 1 0 0 0 1-.9l1-12" stroke-linecap="round"></path>
+									<path d="M10 11v6M14 11v6" stroke-linecap="round"></path>
+								</svg>
+							</button>
+						</div>
+					</div>
+				</div>
+
+				<p id="ranking-count" class="font-medium text-[16px] leading-[1.1] text-[rgba(43,43,43,0.5)]">
+					{athletes.length} atletas encontrados
+				</p>
+
+				<div id="ranking-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-[18px] gap-y-[36px] w-full">
+					{athletes.map((athlete) => {
+						return (
+							<article
+								class="ranking-card group bg-white border-[1.5px] border-[#eaeaea] rounded-[16px] shadow-[0px_8px_8px_0px_rgba(1,1,1,0.02)] p-5 md:p-6 lg:px-[24px] lg:py-[48px] flex flex-col gap-[24px] items-start transition-all duration-200 hover:border-[#2b2b2b] hover:shadow-[0px_12px_24px_0px_rgba(1,1,1,0.06)]"
+								data-name={athlete.name.toLowerCase()}
+								data-gender={athlete.gender}
+								data-coach={athlete.coach}
+								data-marathons={athlete.marathons}
+								data-best-time={athlete.bestTime}
+							>
+								<div class="flex flex-col gap-[24px] items-start w-full">
+									<div class="flex gap-[8px] items-start w-full">
+										<div class="relative shrink-0 w-[72px] h-[72px]">
+											<img
+												src={athlete.photo}
+												alt={athlete.name}
+												width="72"
+												height="72"
+												loading="lazy"
+												class="w-full h-full rounded-full object-cover aspect-square"
+											/>
+										</div>
+
+										<div class="flex flex-col gap-[16px] items-start min-w-0">
+											<div class="flex flex-col gap-[4px] items-start">
+												<div class="flex gap-[8px] items-center">
+													<span class={`font-bold text-[20px] leading-[1.1] ${athlete.isCoach ? "text-[#010101]" : "text-[#2b2b2b]"}`}>
+														{athlete.name}
+													</span>
+													{athlete.isCoach && <img src={ICON_COACH_STAR} alt="Ícone de treinador" class="w-[16px] h-[16px] shrink-0" loading="lazy" decoding="async" />}
+												</div>
+												<span class="font-normal text-[16px] leading-[1.1] text-[rgba(43,43,43,0.5)]">{athlete.ageGroup}</span>
+											</div>
+											<span class={`font-normal text-[16px] leading-[1.1] ${athlete.isCoach ? "text-[#010101]" : "text-[#2b2b2b]"}`}>
+												{athlete.isCoach ? "Treinador" : `Treinador: ${athlete.coach}`}
+											</span>
+											<div class="flex flex-wrap gap-[8px]">
+												{athlete.badges.map((badge) => (
+													<span
+														class="flex gap-[8px] items-center justify-center px-[12px] py-[6px] rounded-[999px] ring-1 ring-inset ring-black/[0.04]"
+														style={`background-color:${badge.bg}`}
+													>
+														<img src={badge.icon} alt={badge.label} class="w-[14px] h-[14px] shrink-0" loading="lazy" decoding="async" />
+														<span class="font-normal text-[10px] leading-[1.1] whitespace-nowrap" style={`color:${badge.textColor}`}>
+															{badge.label}
+														</span>
+													</span>
+												))}
+											</div>
+										</div>
+
+									</div>
+
+									<div class="h-px w-full bg-[#eaeaea]"></div>
+
+									<div class="flex gap-[71px] items-center w-full">
+										<div class="flex flex-col gap-[16px] items-start w-[83px]">
+											<span class="font-medium text-[16px] leading-[1.1] text-[#2b2b2b]">Total de maratonas</span>
+											<span class="font-bold text-[40px] leading-[1.1] text-[#2b2b2b] tabular-nums">{athlete.marathons}</span>
+										</div>
+										<div class="bg-[#fafafa] flex flex-col items-center gap-[8px] px-[32px] py-[24px] rounded-[8px] flex-1 text-center">
+											<span class="font-medium text-[16px] leading-[1.1] text-[#2b2b2b] whitespace-nowrap">Melhor tempo</span>
+											<span class="font-bold text-[24px] leading-[1.1] text-[#2b2b2b] tabular-nums">{athlete.bestTime}</span>
+											<span class="font-medium text-[16px] leading-[1.1] text-[#2b2b2b] tabular-nums">{athlete.pace}</span>
+										</div>
+									</div>
+
+									<div class="h-px w-full bg-[#eaeaea]"></div>
+								</div>
+
+								<div class="card-history hidden flex-col gap-[24px] items-start w-full">
+									<div class="flex items-center justify-between w-full">
+										<div class="flex gap-[8px] items-center">
+											<img src={ICON_HISTORY} alt="Histórico" class="w-[16px] h-[16px] shrink-0" loading="lazy" decoding="async" />
+											<span class="font-semibold text-[18px] leading-[1.1] text-[#2b2b2b]">Historico completo</span>
+										</div>
+										<div class="bg-[#2b2b2b] flex items-center justify-center px-[8px] py-[4px] rounded-[999px]">
+											<span class="font-normal text-[14px] leading-[1.1] text-[#fefefe]">{athlete.marathons} provas</span>
+										</div>
+									</div>
+
+									{athlete.history.map((yearGroup) => (
+										<div class="flex flex-col gap-[16px] items-start w-full">
+											<div class="flex gap-[8px] items-center w-full">
+												<div class="bg-[#2b2b2b] flex items-center justify-center px-[8px] py-[4px] rounded-[2px] shrink-0">
+													<span class="font-medium text-[16px] leading-[1.1] text-[#fefefe]">{yearGroup.year}</span>
+												</div>
+												<div class="flex-1 h-px bg-[#e5e5e5]"></div>
+												<span class="font-normal text-[14px] leading-[1.1] text-[#2b2b2b] text-right shrink-0">{yearGroup.count}</span>
+											</div>
+
+											<div class="flex flex-col gap-[8px] w-full">
+												{yearGroup.races.map((race) => (
+													<div class="border border-[#2b2b2b] rounded-[4px] p-[12px] w-full">
+														<div class="flex gap-[8px] justify-between w-full">
+															<span class="font-semibold text-[14px] leading-[1.1] text-[#2b2b2b] flex-1">{race.name}</span>
+															<span class="font-semibold text-[14px] leading-[1.1] text-[#2b2b2b] tabular-nums whitespace-nowrap shrink-0">{race.time}</span>
+														</div>
+														<div class="flex gap-[8px] justify-between w-full mt-[8px]">
+															<span class="font-normal text-[11px] leading-[1.1] text-[#2b2b2b]">{race.year}</span>
+															<span class="font-normal text-[11px] leading-[1.1] text-[#2b2b2b] tabular-nums whitespace-nowrap shrink-0">{race.pace}</span>
+														</div>
+													</div>
+												))}
+											</div>
+										</div>
+									))}
+
+									<div class="h-px w-full bg-[#eaeaea]"></div>
+								</div>
+
+								<div class="flex flex-col gap-[8px] items-start w-full">
+									<button
+										type="button"
+									class="btn-salvar w-full border border-[rgba(43,43,43,0.7)] rounded-[4px] flex items-center justify-center py-[14px] px-[16px] font-medium text-[16px] leading-[1.1] text-[rgba(43,43,43,0.8)] transition-all duration-200 hover:bg-[#FCBE2B] hover:text-[#010101] hover:border-[#010101] cursor-pointer"
+									data-name={athlete.name}
+									data-photo={athlete.photo}
+									data-time={athlete.bestTime}
+									data-pace={athlete.pace}
+									data-marathons={String(athlete.marathons)}
+									data-total-km={String(Math.round(athlete.marathons * MARATHON_STANDARD_DISTANCE * 1000) / 1000)}
+									data-age-group={athlete.ageGroup}
+									data-coach={athlete.isCoach ? "Treinador" : `Treinador: ${athlete.coach}`}
+									data-badges={JSON.stringify(athlete.badges)}
+									>
+										Salvar imagem
+									</button>
+									<button
+										type="button"
+										class="card-history-toggle w-full flex items-center justify-center py-[8px] font-medium text-[16px] leading-[1.1] text-[rgba(43,43,43,0.8)] underline underline-offset-4 transition-colors hover:text-[rgba(43,43,43,0.5)] cursor-pointer"
+										data-open="false"
+									>
+										<span class="inline-flex items-center gap-[8px]">
+											<span class="card-history-label">Ver historico completo</span>
+											<svg class="card-history-arrow w-[10px] h-[6px] shrink-0 transition-transform duration-200" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+												<path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+											</svg>
+										</span>
+									</button>
+								</div>
+							</article>
+						);
+					})}
+				</div>
+
+				<div id="ranking-empty" class="hidden w-full flex-col items-center py-[80px] gap-[16px]">
+					<svg class="w-[48px] h-[48px] text-[#e9e9e9]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+						<circle cx="11" cy="11" r="8"></circle>
+						<path d="m21 21-4.3-4.3"></path>
+					</svg>
+					<p class="font-medium text-[18px] text-[rgba(43,43,43,0.5)]">Nenhum atleta encontrado</p>
+				</div>
+			</div>
+
+			<div id="ranking-pagination-wrap" class="flex flex-col gap-[24px] items-center pb-[112px] w-full">
+				<span id="ranking-page-label" class="font-medium text-[16px] leading-[1.1] text-[#2b2b2b]"></span>
+				<div class="flex gap-[8px] items-center">
+					<button
+						type="button"
+						id="ranking-prev"
+						aria-label="Página anterior"
+						class="border border-[#ddd] rounded-[4px] flex items-center justify-center px-[20px] py-[14px] font-medium text-[16px] text-[#2b2b2b] transition-colors hover:bg-[#fcbe2b] cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+					>
+						Anterior
+					</button>
+					<div id="ranking-pages" class="flex gap-[8px] items-center" role="navigation" aria-label="Paginação"></div>
+					<button
+						type="button"
+						id="ranking-next"
+						aria-label="Próxima página"
+						class="border border-[#ddd] rounded-[4px] flex items-center justify-center px-[20px] py-[14px] font-medium text-[16px] text-[#2b2b2b] transition-colors hover:bg-[#fcbe2b] cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+					>
+						Próxima
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- ── Export template ─ 1080×1920px ─ zero-size wrapper evita skip de pintura ── -->
+<div class="fixed top-0 left-0 w-0 h-0 overflow-hidden z-[-50] pointer-events-none" aria-hidden="true">
+<div
+	id="export-template"
+	class="w-[1080px] h-[1920px] bg-white flex flex-col items-center relative"
+	style="font-family:'Inter',sans-serif;"
+>
+	<!-- ① Título principal -->
+	<p style="font-size:64px;font-weight:900;text-align:center;text-transform:uppercase;color:#010101;width:900px;line-height:1.1;margin-top:250px;font-family:'Inter',sans-serif;">
+		Minha performance faz parte de algo maior!
+	</p>
+
+	<!-- ② Banner amarelo -->
+	<div style="background:#FCBE2B;color:#010101;font-size:40px;font-weight:700;padding:16px 32px;margin-top:30px;white-space:nowrap;font-family:'Inter',sans-serif;">
+		PRO Elite: 1000 maratonas até 2030.
+	</div>
+
+	<!-- ③ Card central: 940×900px, borda uniforme 6px + tarja amarela em fluxo flex (sem gap residual) -->
+	<div style="width:940px;height:900px;background:#ffffff;border:6px solid #FCBE2B;display:flex;flex-direction:column;margin-top:40px;flex-shrink:0;box-sizing:border-box;overflow:hidden;">
+
+		<!-- Área de conteúdo (flex:1 — ocupa tudo acima da tarja) -->
+		<div style="flex:1;position:relative;min-height:0;overflow:hidden;">
+
+			<!-- Cabeçalho: foto + info textual -->
+			<div style="display:flex;flex-direction:row;gap:32px;align-items:flex-start;padding:48px 48px 32px 48px;">
+				<div style="width:200px;height:200px;border-radius:100px;overflow:hidden;flex-shrink:0;background:#e5e7eb;">
+					<img id="export-photo" src="" alt="" width="200" height="200" style="width:200px;height:200px;object-fit:cover;display:block;" aria-hidden="true" />
+				</div>
+				<div style="display:flex;flex-direction:column;gap:14px;align-items:flex-start;">
+					<span id="export-name" style="font-size:48px;font-weight:700;line-height:1.1;color:#2b2b2b;font-family:'Inter',sans-serif;"></span>
+					<span id="export-age-group" style="font-size:28px;font-weight:400;line-height:1.1;color:rgba(43,43,43,0.5);font-family:'Inter',sans-serif;"></span>
+					<span id="export-coach-text" style="font-size:32px;font-weight:400;line-height:1.1;color:#2b2b2b;font-family:'Inter',sans-serif;white-space:nowrap;"></span>
+					<div id="export-badges" style="display:flex;flex-direction:row;flex-wrap:wrap;gap:12px;margin-top:4px;"></div>
+				</div>
+			</div>
+
+			<!-- Divisor -->
+			<div style="width:844px;height:1px;background:#eaeaea;margin:0 48px;flex-shrink:0;"></div>
+
+			<!-- Total de maratonas — absolute esquerda (bottom:70px = 70px acima da tarja) -->
+			<div style="position:absolute;left:60px;bottom:70px;width:300px;display:flex;flex-direction:column;align-items:center;">
+				<span style="font-size:36px;font-weight:700;color:#2b2b2b;text-align:center;font-family:'Inter',sans-serif;">Total de maratonas</span>
+				<span id="export-marathons" style="font-size:100px;font-weight:900;line-height:1.1;color:#2b2b2b;margin-top:10px;font-family:'Inter',sans-serif;"></span>
+			</div>
+
+			<!-- Melhor tempo — absolute direita (bottom:70px = 70px acima da tarja) -->
+			<div style="background:#F9FAFB;border-radius:24px;width:400px;height:250px;display:flex;flex-direction:column;justify-content:center;align-items:center;position:absolute;right:60px;bottom:70px;">
+				<span style="font-size:32px;font-weight:500;color:#2b2b2b;text-align:center;font-family:'Inter',sans-serif;">Melhor tempo</span>
+				<span id="export-time" style="font-size:60px;font-weight:700;color:#2b2b2b;margin-top:16px;font-family:'Inter',sans-serif;"></span>
+				<span id="export-pace" style="font-size:28px;font-weight:500;color:#2b2b2b;margin-top:8px;font-family:'Inter',sans-serif;"></span>
+			</div>
+
+		</div>
+
+		<!-- Tarja amarela — em fluxo flex normal, toca as bordas laterais e o fundo sem gap -->
+		<div style="width:100%;height:80px;background:#FCBE2B;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+			<span style="font-size:28px;font-weight:700;color:#010101;text-align:center;font-family:'Inter',sans-serif;">1000maratonas.proeliteassessoria.com.br</span>
+		</div>
+	</div>
+
+	<!-- ④ Logo PRO Elite — empurrado para o fundo pelo flex -->
+	<img id="export-logo" src="/favicon.svg" alt="PRO Elite" width="250" height="163" style="margin-top:auto;margin-bottom:150px;width:250px;object-fit:contain;display:block;" />
+</div>
+</div>
+
+<script>
+	type SortKey = "bestTime" | "marathons_desc" | "name";
+
+	const PAGE_SIZE = 6;
+
+	const state = {
+		search: "",
+		gender: "Todos",
+		coach: "Todos",
+		sort: "bestTime" as SortKey,
+		tab: "athletes" as "athletes" | "coaches" | "times",
+		page: 1,
+	};
+
+	const grid = document.getElementById("ranking-grid") as HTMLElement;
+	const cards = Array.from(grid.querySelectorAll<HTMLElement>(".ranking-card"));
+	const searchInput = document.getElementById("ranking-search") as HTMLInputElement;
+	const countEl = document.getElementById("ranking-count") as HTMLElement;
+	const pageLabelEl = document.getElementById("ranking-page-label") as HTMLElement;
+	const emptyEl = document.getElementById("ranking-empty") as HTMLElement;
+	const paginationWrap = document.getElementById("ranking-pagination-wrap") as HTMLElement;
+	const prevBtn = document.getElementById("ranking-prev") as HTMLButtonElement;
+	const nextBtn = document.getElementById("ranking-next") as HTMLButtonElement;
+	const pagesEl = document.getElementById("ranking-pages") as HTMLElement;
+	const genderBar = document.getElementById("ranking-gender") as HTMLElement;
+	const genderButtons = Array.from(genderBar.querySelectorAll<HTMLButtonElement>("button[data-gender]"));
+	const athletesTabBtn = document.getElementById("ranking-athletes-tab") as HTMLButtonElement;
+	const coachBtn = document.getElementById("ranking-coach-btn") as HTMLButtonElement;
+	const coachLabel = document.getElementById("ranking-coach-label") as HTMLElement;
+	const coachDropdown = document.getElementById("ranking-coach-dropdown") as HTMLElement;
+	const coachChevron = document.getElementById("coach-chevron") as SVGElement;
+	const sortBtn = document.getElementById("ranking-sort-btn") as HTMLButtonElement;
+	const sortLabel = document.getElementById("ranking-sort-label") as HTMLElement;
+	const sortDropdown = document.getElementById("ranking-sort-dropdown") as HTMLElement;
+	const clearBtn = document.getElementById("ranking-clear") as HTMLButtonElement;
+	const coachOptions = Array.from(coachDropdown.querySelectorAll<HTMLButtonElement>("button[data-coach]"));
+	const sortOptions = Array.from(sortDropdown.querySelectorAll<HTMLButtonElement>("button[data-sort]"));
+
+	const SORT_LABELS: Record<SortKey, string> = {
+		bestTime: "Melhores tempos",
+		marathons_desc: "Mais maratonas",
+		name: "Nome (A-Z)",
+	};
+
+	function syncGenderButtons() {
+		genderButtons.forEach((button) => {
+			const isActive = (button.dataset.gender ?? "") === state.gender;
+			button.className = `gender-option flex-1 h-full rounded-[999px] font-medium text-[16px] leading-[1.1] transition-colors cursor-pointer ${
+				isActive ? "bg-[#fcbe2b] text-[#010101]" : "text-[#2b2b2b] hover:bg-[#fcbe2b]"
+			}`;
+		});
+	}
+
+	function syncFilterTabs() {
+		const isAthletes = state.tab === "athletes";
+		const isCoaches = state.tab === "coaches";
+		const isTimes = state.tab === "times";
+
+		athletesTabBtn.className = "hidden";
+
+		coachBtn.className = `border rounded-[999px] h-[52px] w-[260px] flex items-center gap-[8px] px-[24px] font-medium text-[18px] leading-[1.1] transition-colors cursor-pointer ${
+			isCoaches ? "border-[#010101] bg-[#fcbe2b] text-[#010101]" : "border-[rgba(43,43,43,0.5)] bg-transparent text-[#2b2b2b] hover:bg-[#fcbe2b] hover:text-[#010101]"
+		}`;
+
+		sortBtn.className = `border rounded-[999px] h-[52px] w-[315px] flex items-center gap-[16px] px-[24px] font-medium text-[18px] leading-[1.1] transition-colors cursor-pointer ${
+			isTimes ? "border-[#010101] bg-[#fcbe2b] text-[#010101]" : "border-[rgba(43,43,43,0.5)] bg-transparent text-[#2b2b2b] hover:bg-[#fcbe2b] hover:text-[#010101]"
+		}`;
+	}
+
+	function syncCoachOptions() {
+		coachOptions.forEach((button) => {
+			const isActive = (button.dataset.coach ?? "") === state.coach;
+			button.className = `coach-option w-full text-left px-[20px] py-[12px] font-medium text-[16px] transition-colors cursor-pointer ${
+				isActive ? "bg-[#fcbe2b] text-[#010101]" : "text-[#2b2b2b] hover:bg-[#fcbe2b]"
+			}`;
+		});
+	}
+
+	function syncSortOptions() {
+		sortOptions.forEach((button) => {
+			const isActive = (button.dataset.sort ?? "") === state.sort;
+			button.className = `sort-option w-full text-left px-[20px] py-[12px] font-medium text-[16px] transition-colors cursor-pointer ${
+				isActive ? "bg-[#fcbe2b] text-[#010101]" : "text-[#2b2b2b] hover:bg-[#fcbe2b]"
+			}`;
+		});
+	}
+
+	function closeHistory(card: HTMLElement) {
+		const history = card.querySelector<HTMLElement>(".card-history");
+		const toggle = card.querySelector<HTMLButtonElement>(".card-history-toggle");
+		const label = toggle?.querySelector<HTMLElement>(".card-history-label");
+		const arrow = toggle?.querySelector<SVGElement>(".card-history-arrow");
+
+		if (!history || !toggle || !label || !arrow) return;
+
+		history.classList.remove("flex");
+		history.classList.add("hidden");
+		label.textContent = "Ver historico completo";
+		arrow.style.transform = "";
+		toggle.dataset.open = "false";
+		card.classList.remove("border-[#2b2b2b]");
+		card.classList.add("border-[#eaeaea]");
+	}
+
+	function openHistory(card: HTMLElement) {
+		const history = card.querySelector<HTMLElement>(".card-history");
+		const toggle = card.querySelector<HTMLButtonElement>(".card-history-toggle");
+		const label = toggle?.querySelector<HTMLElement>(".card-history-label");
+		const arrow = toggle?.querySelector<SVGElement>(".card-history-arrow");
+
+		if (!history || !toggle || !label || !arrow) return;
+
+		history.classList.remove("hidden");
+		history.classList.add("flex");
+		label.textContent = "Resumir historico";
+		arrow.style.transform = "rotate(180deg)";
+		toggle.dataset.open = "true";
+		card.classList.remove("border-[#eaeaea]");
+		card.classList.add("border-[#2b2b2b]");
+	}
+
+	function closeAllHistories(exceptCard?: HTMLElement) {
+		cards.forEach((card) => {
+			if (exceptCard && card === exceptCard) return;
+			closeHistory(card);
+		});
+	}
+
+	function getFilteredAndSortedCards() {
+		const filtered = cards.filter((card) => {
+			const name = card.dataset.name ?? "";
+			const gender = card.dataset.gender ?? "";
+			const coach = card.dataset.coach ?? "";
+
+			const matchesSearch = state.search === "" || name.includes(state.search.toLowerCase());
+			const matchesGender =
+				state.gender === "Todos" ||
+				(state.gender === "Masculino" && gender === "M") ||
+				(state.gender === "Feminino" && gender === "F");
+			const matchesCoach = state.coach === "Todos" || coach === state.coach;
+
+			return matchesSearch && matchesGender && matchesCoach;
+		});
+
+		filtered.sort((left, right) => {
+			if (state.sort === "bestTime") {
+				return (left.dataset.bestTime ?? "").localeCompare(right.dataset.bestTime ?? "");
+			}
+			if (state.sort === "marathons_desc") {
+				return Number(right.dataset.marathons ?? 0) - Number(left.dataset.marathons ?? 0);
+			}
+			return (left.dataset.name ?? "").localeCompare(right.dataset.name ?? "");
+		});
+
+		return filtered;
+	}
+
+	function renderPagination(totalPages: number) {
+		pagesEl.innerHTML = "";
+
+		for (let page = 1; page <= totalPages; page += 1) {
+			const button = document.createElement("button");
+			button.type = "button";
+			button.dataset.page = String(page);
+			button.textContent = String(page);
+			button.className =
+				page === state.page
+					? "bg-[#fcbe2b] border border-[#010101] rounded-[4px] flex items-center justify-center px-[20px] py-[14px] font-bold text-[16px] text-[#2b2b2b] cursor-pointer"
+					: "border border-[#ddd] rounded-[4px] flex items-center justify-center px-[20px] py-[14px] font-medium text-[16px] text-[#2b2b2b] hover:bg-[#fcbe2b] transition-colors cursor-pointer";
+			pagesEl.appendChild(button);
+		}
+
+		prevBtn.disabled = state.page <= 1;
+		nextBtn.disabled = state.page >= totalPages;
+	}
+
+	function render() {
+		const filtered = getFilteredAndSortedCards();
+		const total = filtered.length;
+
+		closeAllHistories();
+
+		cards.forEach((card) => {
+			card.style.display = "none";
+		});
+
+		if (total === 0) {
+			grid.style.display = "none";
+			emptyEl.style.display = "flex";
+			paginationWrap.style.display = "none";
+			countEl.textContent = "0 atletas encontrados";
+			pageLabelEl.textContent = "0 atletas encontrados";
+			return;
+		}
+
+		grid.style.display = "grid";
+		emptyEl.style.display = "none";
+		paginationWrap.style.display = "flex";
+
+		const totalPages = Math.ceil(total / PAGE_SIZE);
+		if (state.page > totalPages) state.page = totalPages;
+
+		const start = (state.page - 1) * PAGE_SIZE;
+		const end = start + PAGE_SIZE;
+		const currentPageCards = filtered.slice(start, end);
+
+		currentPageCards.forEach((card) => {
+			card.style.display = "";
+			grid.appendChild(card);
+		});
+
+		countEl.textContent = `${total} atleta${total > 1 ? "s" : ""} encontrado${total > 1 ? "s" : ""}`;
+		pageLabelEl.textContent = `${total} Atleta${total > 1 ? "s" : ""} encontrado${total > 1 ? "s" : ""} • Pagina ${state.page} de ${totalPages}`;
+
+		renderPagination(totalPages);
+	}
+
+	searchInput.addEventListener("input", () => {
+		state.search = searchInput.value.trim();
+		state.page = 1;
+		render();
+	});
+
+	genderBar.addEventListener("click", (event) => {
+		const button = (event.target as Element).closest<HTMLButtonElement>("button[data-gender]");
+		if (!button) return;
+		state.gender = button.dataset.gender ?? "Todos";
+		state.page = 1;
+		syncGenderButtons();
+		render();
+	});
+
+	athletesTabBtn.addEventListener("click", () => {
+		state.tab = "athletes";
+		syncFilterTabs();
+		coachDropdown.classList.add("hidden");
+		sortDropdown.classList.add("hidden");
+		coachChevron.style.transform = "";
+	});
+
+	coachBtn.addEventListener("click", (event) => {
+		event.stopPropagation();
+		state.tab = "coaches";
+		syncFilterTabs();
+		const willOpen = coachDropdown.classList.contains("hidden");
+		coachDropdown.classList.toggle("hidden");
+		sortDropdown.classList.add("hidden");
+		coachChevron.style.transform = willOpen ? "rotate(180deg)" : "";
+	});
+
+	coachDropdown.addEventListener("click", (event) => {
+		const button = (event.target as Element).closest<HTMLButtonElement>("button[data-coach]");
+		if (!button) return;
+		state.coach = button.dataset.coach ?? "Todos";
+		state.page = 1;
+		coachLabel.textContent = state.coach;
+		syncCoachOptions();
+		coachDropdown.classList.add("hidden");
+		coachChevron.style.transform = "";
+		render();
+	});
+
+	sortBtn.addEventListener("click", (event) => {
+		event.stopPropagation();
+		state.tab = "times";
+		syncFilterTabs();
+		sortDropdown.classList.toggle("hidden");
+		coachDropdown.classList.add("hidden");
+		coachChevron.style.transform = "";
+	});
+
+	sortDropdown.addEventListener("click", (event) => {
+		const button = (event.target as Element).closest<HTMLButtonElement>("button[data-sort]");
+		if (!button) return;
+		const sortKey = (button.dataset.sort ?? "bestTime") as SortKey;
+		state.sort = sortKey;
+		state.page = 1;
+		sortLabel.textContent = SORT_LABELS[sortKey];
+		syncSortOptions();
+		sortDropdown.classList.add("hidden");
+		render();
+	});
+
+	clearBtn.addEventListener("click", () => {
+		state.search = "";
+		state.gender = "Todos";
+		state.coach = "Todos";
+		state.sort = "bestTime";
+		state.tab = "athletes";
+		state.page = 1;
+
+		searchInput.value = "";
+		coachLabel.textContent = "Todos";
+		sortLabel.textContent = SORT_LABELS.bestTime;
+
+		syncGenderButtons();
+		syncFilterTabs();
+		syncCoachOptions();
+		syncSortOptions();
+		render();
+	});
+
+	pagesEl.addEventListener("click", (event) => {
+		const button = (event.target as Element).closest<HTMLButtonElement>("button[data-page]");
+		if (!button) return;
+		state.page = Number(button.dataset.page ?? "1");
+		render();
+	});
+
+	prevBtn.addEventListener("click", () => {
+		if (state.page <= 1) return;
+		state.page -= 1;
+		render();
+	});
+
+	nextBtn.addEventListener("click", () => {
+		state.page += 1;
+		render();
+	});
+
+	document.addEventListener("click", () => {
+		coachDropdown.classList.add("hidden");
+		sortDropdown.classList.add("hidden");
+		coachChevron.style.transform = "";
+	});
+
+	grid.addEventListener("click", (event) => {
+		const toggle = (event.target as Element).closest<HTMLButtonElement>(".card-history-toggle");
+		if (!toggle) return;
+
+		event.stopPropagation();
+
+		// Escopo estritamente isolado: somente o card pai direto do toggle clicado
+		const card = toggle.closest<HTMLElement>(".ranking-card");
+		if (!card) return;
+
+		// Confirma que o .card-history pertence exclusivamente a este card
+		const history = card.querySelector<HTMLElement>(".card-history");
+		if (!history) return;
+
+		const isOpen = toggle.dataset.open === "true";
+
+		if (isOpen) {
+			// Fecha apenas este card — sem tocar nos demais
+			closeHistory(card);
+		} else {
+			// Fecha todos os outros e abre somente este
+			cards.forEach((c) => { if (c !== card) closeHistory(c); });
+			openHistory(card);
+		}
+	});
+
+	syncGenderButtons();
+	syncFilterTabs();
+	syncCoachOptions();
+	syncSortOptions();
+	render();
+</script>
+
+<script>
+	// ── Salvar imagem: geração via html-to-image ──────────────────────────────
+	(async () => {
+		type BadgeData = { label: string; bg: string; textColor: string; icon: string };
+
+		// Pré-carrega html-to-image antes de qualquer clique para resposta imediata
+		const htmlToImage = await import('https://esm.sh/html-to-image');
+
+		const template    = document.getElementById('export-template')   as HTMLElement;
+		const photoEl     = document.getElementById('export-photo')      as HTMLImageElement;
+		const logoEl      = document.getElementById('export-logo')       as HTMLImageElement;
+		const nameEl      = document.getElementById('export-name')       as HTMLElement;
+		const ageGroupEl  = document.getElementById('export-age-group')  as HTMLElement;
+		const coachEl     = document.getElementById('export-coach-text') as HTMLElement;
+		const timeEl      = document.getElementById('export-time')       as HTMLElement;
+		const paceEl      = document.getElementById('export-pace')       as HTMLElement;
+		const marathonsEl = document.getElementById('export-marathons')  as HTMLElement;
+		const badgesEl    = document.getElementById('export-badges')     as HTMLElement;
+
+		/**
+		 * Converte qualquer URL em data-URL Base64 via fetch → FileReader.
+		 * URLs locais são buscadas diretamente; URLs externas iteram uma lista de proxies.
+		 */
+		async function getBase64Image(url: string): Promise<string> {
+			const proxies: Array<(u: string) => string> = [
+				(u) => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+				(u) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+				(u) => `https://thingproxy.freeboard.io/fetch/${u}`,
+			];
+
+			function blobToBase64(blob: Blob): Promise<string> {
+				return new Promise((resolve, reject) => {
+					const reader = new FileReader();
+					reader.onloadend = () => resolve(reader.result as string);
+					reader.onerror = reject;
+					reader.readAsDataURL(blob);
+				});
+			}
+
+			// Imagens locais: tenta diretamente primeiro
+			const isLocal = url.startsWith('/') || url.includes(window.location.hostname);
+			if (isLocal) {
+				try {
+					const resp = await fetch(url);
+					return await blobToBase64(await resp.blob());
+				} catch (e) {
+					console.warn('Falha ao carregar imagem local diretamente, tentando proxies...');
+				}
+			}
+
+			// Loop de proxies
+			for (const proxyFn of proxies) {
+				try {
+					const proxyUrl = proxyFn(url);
+					const response = await fetch(proxyUrl, {
+						method: 'GET',
+						headers: { 'X-Requested-With': 'XMLHttpRequest' },
+					});
+					if (!response.ok) continue;
+					return await blobToBase64(await response.blob());
+				} catch (err) {
+					console.warn(`Falha no proxy ${proxyFn.name || proxyFn.toString().slice(0, 40)}, tentando o próximo...`);
+				}
+			}
+
+			throw new Error('Todos os métodos de carregamento de imagem falharam (CORS/Network).');
+		}
+
+		// Pré-carrega o logo estático na inicialização da página
+		try {
+			const logoBase64 = await getBase64Image(logoEl.src);
+			logoEl.src = logoBase64;
+		} catch { /* logo opcional — não bloqueia exportação */ }
+
+		document.addEventListener('click', async (event) => {
+			const btn = (event.target as Element).closest<HTMLButtonElement>('.btn-salvar');
+			if (!btn) return;
+
+			const originalText = btn.textContent?.trim() ?? 'Salvar imagem';
+
+			// Feedback visual: spinner SVG + texto de progresso
+			btn.innerHTML =
+				`<svg style="display:inline-block;width:16px;height:16px;margin-right:8px;vertical-align:-2px;animation:spin 0.8s linear infinite;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">` +
+				`<circle style="opacity:0.25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>` +
+				`<path style="opacity:0.75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>` +
+				`Baixando imagem...`;
+			btn.disabled = true;
+
+			// Injeta keyframe de spin uma única vez no documento
+			if (!document.getElementById('spin-keyframe')) {
+				const style = document.createElement('style');
+				style.id = 'spin-keyframe';
+				style.textContent = '@keyframes spin { to { transform: rotate(360deg); } }';
+				document.head.appendChild(style);
+			}
+
+			try {
+				const { name, photo, time, pace, marathons, ageGroup, coach, badges } = btn.dataset;
+				const marathonsNumber = Number.parseInt(marathons ?? '0', 10);
+				const safeMarathons = Number.isFinite(marathonsNumber) && marathonsNumber > 0 ? marathonsNumber : 0;
+				const athleteTotalKm = Math.round((safeMarathons * 42.195) * 1000) / 1000;
+				const athleteTotalKmLabel = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(athleteTotalKm);
+				const safeName = (name ?? 'atleta').replace(/\s+/g, '-').toLowerCase();
+
+				// Passo 1: garantir que as fontes (Inter) estão totalmente carregadas
+				await document.fonts.ready;
+
+				// Passo 2: injetar todos os textos no template
+				nameEl.textContent      = name      ?? '';
+				ageGroupEl.textContent  = ageGroup  ?? '';
+				coachEl.textContent     = coach     ?? '';
+				timeEl.textContent      = time      ?? '';
+				paceEl.textContent      = pace      ?? '';
+				marathonsEl.textContent = String(safeMarathons);
+
+				// Passo 3: converter foto para Base64 e injetar no src
+				const photoBase64 = await getBase64Image(photo ?? '');
+				photoEl.src = photoBase64;
+
+				// Passo 4: badges como pills de texto (sem SVG, sem img)
+				badgesEl.innerHTML = '';
+				try {
+					const badgesData: BadgeData[] = JSON.parse(badges ?? '[]');
+					for (const badge of badgesData) {
+						const pill = document.createElement('div');
+						pill.style.cssText =
+							`display:inline-flex;align-items:center;padding:12px 28px;border-radius:999px;` +
+							`background:${badge.bg};border:2px solid rgba(0,0,0,0.08);`;
+						const label = document.createElement('span');
+						label.textContent = badge.label;
+						label.style.cssText =
+							`font-size:24px;font-weight:600;line-height:1;color:${badge.textColor};` +
+							`white-space:nowrap;font-family:'Inter',sans-serif;`;
+						pill.appendChild(label);
+						badgesEl.appendChild(pill);
+					}
+				} catch { /* JSON inválido — ignora badges */ }
+
+				// Passo 5: aguarda 500ms cruciais para o navegador desenhar fontes e imagem Base64
+				await new Promise((resolve) => setTimeout(resolve, 500));
+
+				// Passo 6: captura via html-to-image — dimensões explícitas ignoram o wrapper invisível
+				const dataUrl = await htmlToImage.toPng(template, {
+					quality: 1,
+					backgroundColor: '#ffffff',
+					pixelRatio: 2,
+					width: 1080,
+					height: 1920,
+					style: {
+						transform: 'scale(1)',
+						transformOrigin: 'top left',
+					},
+				});
+
+				// Passo 7: dataURL → Blob → File → Web Share API (mobile) ou download (desktop)
+				const blob = await fetch(dataUrl).then((r) => r.blob());
+				const file = new File([blob], `atleta-${safeName}.png`, { type: 'image/png' });
+
+				if (navigator.canShare && navigator.canShare({ files: [file] })) {
+					await navigator.share({
+						files: [file],
+						title: 'Meu desempenho PRO Elite',
+						text: `Confira meu resultado na 1000 Maratonas até 2030! ${safeMarathons} maratonas e ${athleteTotalKmLabel} km acumulados.`,
+					});
+				} else {
+					const url = URL.createObjectURL(blob);
+					const a   = document.createElement('a');
+					a.href     = url;
+					a.download = `atleta-${safeName}.png`;
+					document.body.appendChild(a);
+					a.click();
+					document.body.removeChild(a);
+					URL.revokeObjectURL(url);
+				}
+			} catch (err) {
+				console.error('[export-card] Falha ao gerar imagem:', err);
+				alert('Não foi possível carregar as fotos dos atletas devido a restrições de rede. Tente novamente em instantes ou verifique sua conexão.');
+			} finally {
+				btn.textContent = originalText;
+				btn.disabled = false;
+			}
+		});
+	})();
+</script>

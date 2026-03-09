@@ -1,0 +1,29 @@
+---
+import '../styles/global.css';
+import FooterBar from '../components/FooterBar.astro';
+---
+<!doctype html>
+<html lang="pt-BR">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+		<!-- SEO -->
+		<title>PRO Elite | 1000 maratonas até 2030</title>
+		<meta name="description" content="Acompanhe o ranking e a performance dos atletas da PRO Elite Assessoria Esportiva. 1000 maratonas concluídas até 2030." />
+		<meta name="robots" content="index, follow" />
+
+		<!-- Open Graph -->
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content="PRO Elite | 1000 maratonas até 2030" />
+		<meta property="og:description" content="Acompanhe o ranking e a performance dos atletas da PRO Elite Assessoria Esportiva. 1000 maratonas concluídas até 2030." />
+		<meta property="og:image" content="/og-image.png" />
+		<meta property="og:url" content="https://1000maratonas.proeliteassessoria.com.br" />
+		<meta property="og:site_name" content="PRO Elite" />
+	</head>
+	<body class="bg-[#fefefe] text-pro-black antialiased">
+		<slot />
+		<FooterBar />
+	</body>
+</html>
