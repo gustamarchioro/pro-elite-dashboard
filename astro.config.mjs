@@ -1,8 +1,10 @@
 import { defineConfig } from 'astro/config';
-import tailwind from "@astrojs/tailwind";
+import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   site: 'https://gustamarchioro.github.io', 
-  base: '/pro-elite-dashboard', // O nome exato do seu repositório
-  integrations: [tailwind()],
+  base: '/pro-elite-dashboard',
+  vite: {
+    plugins: [tailwindcss()],
+  },
 });
